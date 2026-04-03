@@ -13,8 +13,8 @@
   programs.home-manager.enable = true;
 
   programs.git.enable = true;
-  programs.git.userName = "Trung Hoang";
-  programs.git.userEmail = "wanbicoi123@gmail.com";
+  programs.git.settings.user.name = "Trung Hoang";
+  programs.git.settings.user.email = "wanbicoi123@gmail.com";
   programs.neovim.enable = true;
 
   home.packages = with pkgs; [
@@ -23,5 +23,7 @@
     nil
     nixpkgs-fmt
     xfce.thunar
+    xfce.thunar-volman
+    nixfmt
   ];
 }
