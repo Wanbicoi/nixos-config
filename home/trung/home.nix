@@ -25,5 +25,6 @@
     xfce.thunar
     xfce.thunar-volman
     nixfmt
+    ventoy
   ];
 }

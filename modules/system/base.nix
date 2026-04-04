@@ -30,6 +30,15 @@
     variant = "";
   };
 
+  services.xserver.enable = true;
+  services.displayManager.sddm.enable = true;
+  services.displayManager.sddm.wayland.enable = true;
+  services.displayManager.defaultSession = "plasma";
+  services.desktopManager.plasma6.enable = true;
+  environment.variables = {
+    NIXOS_OZONE_WL = "1"; # Tells Electron apps (VS Code, Discord) to use Wayland
+  };
+  
   users.users.trung = {
     isNormalUser = true;
     description = "Trung";

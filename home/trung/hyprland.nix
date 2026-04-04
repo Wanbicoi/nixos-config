@@ -23,7 +23,6 @@
       exec-once = [
         "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE HYPRLAND_INSTANCE_SIGNATURE"
         "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE HYPRLAND_INSTANCE_SIGNATURE"
-        "systemctl --user restart waybar.service"
       ];
     };
     extraConfig = ''
@@ -33,8 +32,8 @@
   };
 
   programs.waybar = {
-    enable = true;
-    systemd.enable = true;
+    enable = false;
+    systemd.enable = false;
     settings = [
       {
         layer = "top";
@@ -176,7 +175,7 @@
   '';
 
   home.packages = with pkgs; [
-    waybar
+    # waybar
     kitty
     wofi
     nwg-displays
