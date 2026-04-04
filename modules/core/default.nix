@@ -3,6 +3,7 @@
   imports = [
     ./bootloader.nix
     ./xserver.nix
+    ./wayland.nix
     ./network.nix
     ./bluetooth.nix
     ./fonts.nix

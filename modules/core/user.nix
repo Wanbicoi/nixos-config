@@ -16,14 +16,15 @@
     useUserPackages = true;
     useGlobalPkgs = true;
     users.trung = {
-      imports = [ ./../desktop/kde ];
+      # imports = [ ./../desktop/kde ];
+      imports = [ ./../desktop/hyprland ];
       home.username = "trung";
       home.homeDirectory = "/home/trung";
       home.stateVersion = "25.11";
       programs.home-manager.enable = true;
     };
-    # TODO: Research for this later
-    # backupFileExtension = "hm-backup";
+    # when nix generates a backup of the old configuration, it will use this extension
+    backupFileExtension = "hm-backup";
   };
 
   users.users.trung = {
