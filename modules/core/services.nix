@@ -13,10 +13,10 @@
     fwupd.enable = true;
 
     # needed for GNOME services outside of GNOME Desktop
-    dbus.packages = with pkgs; [
-      gcr
-      gnome-settings-daemon
-    ];
+    # dbus.packages = with pkgs; [
+    #   gcr
+    #   gnome-settings-daemon
+    # ];
 
     # logind.settings.Login = {
     #   # don’t shutdown when power button is short-pressed
@@ -27,5 +27,11 @@
     # };
 
     udisks2.enable = true;
+
+    # TODO: Remove this later when finished setup hyprland
+    displayManager.sddm.enable = true;
+    displayManager.sddm.wayland.enable = true;
+    displayManager.defaultSession = "plasma";
+    desktopManager.plasma6.enable = true;
   };
 }
