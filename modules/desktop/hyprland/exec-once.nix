@@ -7,14 +7,31 @@
 
     # "hyprlock"
 
-    "nm-applet &"
-    "poweralertd &"
+    # Start core session tray/background apps.
+    # NetworkManager tray icon.
+    # "nm-applet &"
+    # Power/battery alert daemon.
+    # "poweralertd &"
+    # Keep clipboard contents persistent across app exits.
     "wl-clip-persist --clipboard both &"
+    # Store clipboard changes into cliphist.
     "wl-paste --watch cliphist store &"
-    "waybar &"
-    "swaync &"
-    # "udiskie --automount --notify --smart-tray &"
-    "hyprctl setcursor Bibata-Modern-Ice 24 &"
-    "init-wallpaper &"
+    # Launch commonly used apps at session start.
+    "firefox &"
+    "code &"
+    # Top status bar.
+    # "waybar &"
+    # Caelestia is started by its systemd user service.
+    # "caelestia shell -d &"
+    # Notification daemon and control center. 
+    # "swaync &"
+    # Auto-mount removable drives with tray notifications.
+    "udiskie --automount --notify --smart-tray &"
+    # Set cursor theme and size for the session.
+    # "hyprctl setcursor Bibata-Modern-Ice 24 &"
+    # Initialize wallpaper script.
+    # "init-wallpaper &"
+    # "awww-daemon &"
+    # "awww img -t none ~/nixos-config/wallpapers/space.png"
   ];
 }

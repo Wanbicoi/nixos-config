@@ -1,5 +1,6 @@
 { pkgs, ... }:
 {
+  # TODO: Move to custom
   home.packages = with pkgs; [
     wofi
     awww # Animated wallpaper daemon for Wayland

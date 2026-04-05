@@ -6,11 +6,11 @@
     ./wayland.nix
     ./network.nix
     ./bluetooth.nix
-    ./fonts.nix
     ./security.nix # lockscreen
     ./services.nix
     ./system.nix
     ./user.nix
+    # ./fonts.nix
     # TODO: Comback later
     # ./pipewire.nix
     # ./wayland.nix

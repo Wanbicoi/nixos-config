@@ -2,13 +2,13 @@
 {
   wayland.windowManager.hyprland.settings = {
     input = {
-      kb_layout = "us,fr";
-      kb_options = "grp:alt_caps_toggle";
+      kb_layout = "us";
+      kb_options = "caps:ctrl_modifier";
 
       repeat_delay = 300;
       numlock_by_default = true;
 
-      follow_mouse = 0;
+      follow_mouse = 1;
       mouse_refocus = 0;
       float_switch_override_focus = 0;
 
@@ -19,14 +19,8 @@
     };
 
     general = {
-      layout = "dwindle";
-
-      gaps_in = 6;
-      gaps_out = 12;
-      border_size = 2;
-
-      "col.active_border" = "rgb(98971A) rgb(CC241D) 45deg";
-      "col.inactive_border" = "0x00000000";
+      gaps_in = 5;
+      gaps_out = 10;
     };
 
     misc = {
@@ -50,28 +44,21 @@
     };
 
     decoration = {
-      rounding = 0;
+      rounding = 20;
+      rounding_power = 2;
 
       blur = {
         enabled = true;
-
         size = 3;
-        noise = 0;
         passes = 2;
-        contrast = 1.4;
-        brightness = 1;
-
-        xray = true;
+        vibrancy = 0.1696;
       };
 
       shadow = {
         enabled = true;
-
-        range = 20;
+        range = 4;
         render_power = 3;
-
-        offset = "0 2";
-        color = "rgba(00000055)";
+        color = "rgba(1a1a1aee)";
       };
     };
 

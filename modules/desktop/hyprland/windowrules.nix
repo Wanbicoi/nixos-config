@@ -26,6 +26,8 @@
       "match:title ^(Picture-in-Picture)$, pin on"
       "match:title ^(Picture-in-Picture)$, float on"
 
+      "match:class ^(firefox)$, workspace 1"
+      "match:class ^(code)$, workspace 2"
       "match:class ^(zen-beta)$, workspace 1"
       "match:class ^(Gimp-2.10)$, workspace 4"
       "match:class ^(Aseprite)$, workspace 4"

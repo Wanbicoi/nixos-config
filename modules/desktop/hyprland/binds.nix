@@ -6,17 +6,19 @@
     "$fileManager" = "nemo";
     "$menu" = "wofi";
 
+    # Hyprland bind behavior tuning.
     binds = {
       scroll_event_delay = 100;
       movefocus_cycles_fullscreen = true;
     };
 
     bind = [
-      "$mod, Q, exec, $terminal"
-      "$mod, C, killactive,"
+      # Standard press-only keybinds.
+      "$mod, T, exec, $terminal"
+      "$mod, S, killactive,"
       "$mod, M, exec, command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch exit"
       "$mod, E, exec, $fileManager"
-      "$mod, V, togglefloating,"
+      "$mod, F, togglefloating,"
       "$mod, R, exec, $menu --show drun"
       "$mod, P, pseudo, # dwindle"
       "$mod, J, layoutmsg, togglesplit # dwindle"
@@ -59,40 +61,28 @@
       "$mod, mouse_down, workspace, e+1"
       "$mod, mouse_up, workspace, e-1"
 
-      # Laptop multimedia keys for volume and LCD brightness
+      # Volume keys on press; brightness and media are handled in the Caelestia module.
       ",XF86AudioRaiseVolume, exec, wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"
       ",XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
       ",XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
       ",XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-      ",XF86MonBrightnessUp, exec, brightnessctl -e4 -n2 set 5%+"
-      ",XF86MonBrightnessDown, exec, brightnessctl -e4 -n2 set 5%-"
-
-      # Requires playerctl
-      ", XF86AudioNext, exec, playerctl next"
-      ", XF86AudioPause, exec, playerctl play-pause"
-      ", XF86AudioPlay, exec, playerctl play-pause"
-      ", XF86AudioPrev, exec, playerctl previous"
     ];
 
     bindm = [
+      # Mouse drag binds.
       "$mod, mouse:272, movewindow"
       "$mod, mouse:273, resizewindow"
     ];
 
     bindel = [
+      # Repeatable volume controls while held.
       ",XF86AudioRaiseVolume, exec, wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"
       ",XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
       ",XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
       ",XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-      ",XF86MonBrightnessUp, exec, brightnessctl -e4 -n2 set 5%+"
-      ",XF86MonBrightnessDown, exec, brightnessctl -e4 -n2 set 5%-"
     ];
 
-    bindl = [
-      ", XF86AudioNext, exec, playerctl next"
-      ", XF86AudioPause, exec, playerctl play-pause"
-      ", XF86AudioPlay, exec, playerctl play-pause"
-      ", XF86AudioPrev, exec, playerctl previous"
-    ];
+    # No release-only bindings in the general Hyprland layer right now.
+    bindl = [ ];
   };
 }

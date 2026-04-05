@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 {
   services = {
     gvfs.enable = true;
@@ -11,6 +11,10 @@
     dbus.enable = true;
     fstrim.enable = true;
     fwupd.enable = true;
+
+    # NOTE: for https://docs.noctalia.dev/getting-started/nixos/
+    power-profiles-daemon.enable = true;
+    upower.enable = true;
 
     # needed for GNOME services outside of GNOME Desktop
     # dbus.packages = with pkgs; [
@@ -31,7 +35,7 @@
     # TODO: Remove this later when finished setup hyprland
     displayManager.sddm.enable = true;
     displayManager.sddm.wayland.enable = true;
-    displayManager.defaultSession = "plasma";
-    desktopManager.plasma6.enable = true;
+    # displayManager.defaultSession = "plasma";
+    # desktopManager.plasma6.enable = true;
   };
 }

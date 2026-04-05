@@ -2,8 +2,7 @@
 {
   hardware.bluetooth = {
     enable = true;
-    # TODO: Research for this later
-    powerOnBoot = false;
+    powerOnBoot = true; # Enable when login to laptop
   };
 
   services.blueman.enable = true;

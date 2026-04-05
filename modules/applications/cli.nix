@@ -83,9 +83,7 @@
     # openssl
     # pamixer                           # pulseaudio command line mixer
     # playerctl                         # controller for media players
-    # poweralertd
     # socat
-    # udiskie                           # Automounter for removable media
     unzip
     wget
     # TODO: Research for this later

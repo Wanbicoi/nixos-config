@@ -1,4 +1,4 @@
-{ pkgs, host, ... }:
+{ ... }:
 {
   networking = {
     # TODO - set hostname in the /hosts

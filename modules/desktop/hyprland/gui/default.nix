@@ -12,6 +12,7 @@
     # nm-connection-editor # Not available in nixpkgs, networkmanagerapplet provides GUI access
 
     udiskie # Auto-mount removable media
+    awww
 
     nemo # File manager
   ];

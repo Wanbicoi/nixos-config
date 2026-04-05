@@ -9,7 +9,9 @@
     ./binds.nix
     ./windowrules.nix
     ./gui
-    ./waybar
+    ./desktop/caelestia
+    # ./waybar
+    # ./noctalia.nix
     # ./hyprlock.nix
     # ./variables.nix
     ./env-vars.nix
