@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 {
   security = {
     rtkit.enable = true;
@@ -6,11 +6,20 @@
 
     pam.services = {
       swaylock = { };
+      sudo.fprintAuth = true;
+      login.fprintAuth = true;
       # hyprlock = {
       #   fprintAuth = true;
       # };
     };
   };
 
-  services.fprintd.enable = true;
+  # TODO: Modular this
+  services.fprintd = {
+    enable = true;
+    tod = {
+      enable = true;
+      driver = pkgs.libfprint-2-tod1-goodix-550a;
+    };
+  };
 }

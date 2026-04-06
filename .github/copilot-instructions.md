@@ -6,11 +6,8 @@
 - Add new modules in the closest orchestrator file (for example `modules/core/default.nix` or `modules/desktop/hyprland/default.nix`) instead of importing ad hoc from host files.
 
 ## Build and Test
-- Safe read-only checks:
-  - `nix flake show`
-  - `nix flake check`
 - System-changing commands (require approval because they need `sudo` and modify the live system):
-  - `sudo nixos-rebuild build --flake .#thinkpad`
+  - `sudo nixos-rebuild test --flake .#thinkpad`
   - `sudo nixos-rebuild switch --flake .#thinkpad`
 - When updating inputs, run `nix flake update` before rebuild commands.
 

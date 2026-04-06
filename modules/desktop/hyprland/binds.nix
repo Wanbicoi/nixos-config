@@ -15,7 +15,6 @@
       # Standard press-only keybinds.
       "$mod, T, exec, $terminal"
       "$mod, W, killactive,"
-      "$mod, Escape, exec, hyprlock"
       "$mod, M, exec, command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch exit"
       "$mod, E, exec, $fileManager"
       "$mod, F, togglefloating,"

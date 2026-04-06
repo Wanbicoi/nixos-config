@@ -1,7 +1,9 @@
 { ... }:
 {
+  programs.waybar = {
+    enable = true;
+  };
   imports = [
-    ./waybar.nix
     ./settings.nix
     ./style.nix
   ];

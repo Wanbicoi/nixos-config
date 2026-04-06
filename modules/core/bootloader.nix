@@ -1,10 +1,10 @@
-{ pkgs, ... }:
+{ ... }:
 {
   boot = {
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
-      # TODO: Research for this later
+      timeout = 0;
       systemd-boot.configurationLimit = 10;
     };
     # TODO: Research for this later

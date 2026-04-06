@@ -11,4 +11,5 @@
       intel-media-driver
     ];
   };
+  hardware.enableRedistributableFirmware = true;
 }
