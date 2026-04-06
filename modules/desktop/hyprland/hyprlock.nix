@@ -1,5 +1,8 @@
 { ... }:
 {
+  wayland.windowManager.hyprland.settings.exec-once = [
+    "hyprlock || hyprctl dispatch exit"
+  ];
   programs.hyprlock = {
     enable = true;
 
@@ -12,7 +15,7 @@
 
       background = [
         {
-          path = "${../../../wallpapers/otherWallpaper/gruvbox/forest_road.jpg}";
+          path = "${../../../wallpapers/nixos_wave.png}";
 
           color = "rgba(29, 32, 33, 255)";
           blur_passes = 2;

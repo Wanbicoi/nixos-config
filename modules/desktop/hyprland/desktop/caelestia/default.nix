@@ -16,6 +16,10 @@
       #   showBattery = false;
       # };
       paths.wallpaperDir = "~/nixos-config/wallpapers";
+      border = {
+        rounding = 8;
+        thickness = 0;
+      };
     };
     cli = {
       enable = true; # Also add caelestia-cli to path

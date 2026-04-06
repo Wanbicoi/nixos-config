@@ -2,21 +2,24 @@
 {
   wayland.windowManager.hyprland = {
     extraConfig = ''
-			bind = $mod, space, global, caelestia:launcher
-			bind = $mod SHIFT, S, global, caelestia:screenshotFreeze
-			bind = $mod SHIFT ALT, S, global, caelestia:screenshot
+      bind = $mod, space, global, caelestia:launcher
+      bind = $mod SHIFT, S, global, caelestia:screenshotFreeze
+      bind = $mod SHIFT ALT, S, global, caelestia:screenshot
 
-			bindl = $mod SHIFT, L, global, caelestia:lock
-			bindl = , XF86MonBrightnessUp, global, caelestia:brightnessUp
-			bindl = , XF86MonBrightnessDown, global, caelestia:brightnessDown
-			bindl = , XF86AudioPlay, global, caelestia:mediaToggle
-			bindl = , XF86AudioPause, global, caelestia:mediaToggle
-			bindl = , XF86AudioNext, global, caelestia:mediaNext
-			bindl = , XF86AudioPrev, global, caelestia:mediaPrev
-			bindl = , XF86AudioStop, global, caelestia:mediaStop
-		'';
+      bindl = $mod SHIFT, L, global, caelestia:lock
+      bindl = , XF86MonBrightnessUp, global, caelestia:brightnessUp
+      bindl = , XF86MonBrightnessDown, global, caelestia:brightnessDown
+      bindl = , XF86AudioPlay, global, caelestia:mediaToggle
+      bindl = , XF86AudioPause, global, caelestia:mediaToggle
+      bindl = , XF86AudioNext, global, caelestia:mediaNext
+      bindl = , XF86AudioPrev, global, caelestia:mediaPrev
+      bindl = , XF86AudioStop, global, caelestia:mediaStop
+    '';
 
     settings = {
+      exec-once = [
+        "hyprctl dispatch submap global"
+      ];
       bind = [
         # Caelestia special workspace toggles
         "$mod, F9, exec, caelestia toggle sysmon"

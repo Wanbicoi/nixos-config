@@ -6,7 +6,11 @@
 
     pam.services = {
       swaylock = { };
-      hyprlock = { };
+      # hyprlock = {
+      #   fprintAuth = true;
+      # };
     };
   };
+
+  services.fprintd.enable = true;
 }

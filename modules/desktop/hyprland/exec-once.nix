@@ -5,19 +5,15 @@
     # "dbus-update-activation-environment --all --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
     # "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
 
-    # "hyprlock"
-
     # Start core session tray/background apps.
     # NetworkManager tray icon.
     # "nm-applet &"
     # Power/battery alert daemon.
     # "poweralertd &"
     # Keep clipboard contents persistent across app exits.
-    "wl-clip-persist --clipboard both &"
+    # "wl-clip-persist --clipboard both &"
     # Store clipboard changes into cliphist.
-    "wl-paste --watch cliphist store &"
-    # Keep keybind submap consistent with loaded bindings.
-    "hyprctl dispatch submap global"
+    # "wl-paste --watch cliphist store &"
     # Launch commonly used apps at session start.
     "firefox &"
     "code &"
