@@ -16,6 +16,8 @@
     "wl-clip-persist --clipboard both &"
     # Store clipboard changes into cliphist.
     "wl-paste --watch cliphist store &"
+    # Keep keybind submap consistent with loaded bindings.
+    "hyprctl dispatch submap global"
     # Launch commonly used apps at session start.
     "firefox &"
     "code &"
@@ -28,7 +30,7 @@
     # Auto-mount removable drives with tray notifications.
     "udiskie --automount --notify --smart-tray &"
     # Set cursor theme and size for the session.
-    # "hyprctl setcursor Bibata-Modern-Ice 24 &"
+    "hyprctl setcursor Bibata-Modern-Ice 24 &"
     # Initialize wallpaper script.
     # "init-wallpaper &"
     # "awww-daemon &"

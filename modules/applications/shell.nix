@@ -7,5 +7,6 @@
 
   programs.kitty = {
     enable = true;
+    font.name = "Cascadia Code NF";
   };
 }

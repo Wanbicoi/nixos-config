@@ -4,7 +4,6 @@
     "$mod" = "SUPER";
     "$terminal" = "kitty";
     "$fileManager" = "nemo";
-    "$menu" = "wofi";
 
     # Hyprland bind behavior tuning.
     binds = {
@@ -15,11 +14,10 @@
     bind = [
       # Standard press-only keybinds.
       "$mod, T, exec, $terminal"
-      "$mod, S, killactive,"
+      "$mod, W, killactive,"
       "$mod, M, exec, command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch exit"
       "$mod, E, exec, $fileManager"
       "$mod, F, togglefloating,"
-      "$mod, R, exec, $menu --show drun"
       "$mod, P, pseudo, # dwindle"
       "$mod, J, layoutmsg, togglesplit # dwindle"
 

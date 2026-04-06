@@ -6,6 +6,7 @@
 
       defaultFonts = {
         monospace = [
+          "Cascadia Code NF"
           "Maple Mono"
           "JetBrainsMono Nerd Font"
         ];
@@ -19,6 +20,7 @@
       noto-fonts
       public-sans
 
+      cascadia-code
       nerd-fonts.jetbrains-mono
       nerd-fonts.symbols-only
 

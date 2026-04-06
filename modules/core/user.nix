@@ -25,7 +25,7 @@
       programs.home-manager.enable = true;
     };
     # when nix generates a backup of the old configuration, it will use this extension
-    backupFileExtension = "hm-backup";
+    backupFileExtension = "hm-backup-20260406";
   };
 
   users.users.trung = {
