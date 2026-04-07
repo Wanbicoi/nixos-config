@@ -26,7 +26,7 @@
     # Auto-mount removable drives with tray notifications.
     "udiskie --automount --notify --smart-tray &"
     # Set cursor theme and size for the session.
-    "hyprctl setcursor Bibata-Modern-Ice 24 &"
+    "hyprctl setcursor Bibata-Modern-Ice 20 &"
     # Initialize wallpaper script.
     # "init-wallpaper &"
     # "awww-daemon &"

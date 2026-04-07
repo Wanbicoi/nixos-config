@@ -1,5 +1,8 @@
 { pkgs, ... }:
 {
+  imports = [
+    ../gtk.nix
+  ];
   # TODO: Move to custom
   home.packages = with pkgs; [
     wofi

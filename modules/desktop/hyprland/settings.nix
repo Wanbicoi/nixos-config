@@ -68,6 +68,7 @@
       bezier = [
         "fluent_decel, 0, 0.2, 0.4, 1"
         "easeOutCirc, 0, 0.55, 0.45, 1"
+        "easeInOutBack, 0.68, -0.1, 0.32, 1.1"
         "easeOutCubic, 0.33, 1, 0.68, 1"
         "fade_curve, 0, 0.55, 0.45, 1"
       ];
@@ -88,7 +89,7 @@
         "fadeDim,     1, 4,   fluent_decel" # the easing of the dimming of inactive windows
         # "border,      1, 2.7, easeOutCirc"  # for animating the border's color switch speed
         # "borderangle, 1, 30,  fluent_decel, once" # for animating the border's gradient angle - styles: once (default), loop
-        "workspaces,  1, 4,   easeOutCubic, fade" # styles: slide, slidevert, fade, slidefade, slidefadevert
+        "workspaces,  1, 3,   easeInOutBack, slidefadevert" # styles: slide, slidevert, fade, slidefade, slidefadevert
       ];
     };
 

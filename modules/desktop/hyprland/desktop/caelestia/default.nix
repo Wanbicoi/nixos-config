@@ -16,6 +16,10 @@
       #   showBattery = false;
       # };
       paths.wallpaperDir = "~/nixos-config/wallpapers";
+      general.idle = {
+        lockBeforeSleep = false;
+        timeouts = [ ];
+      };
       border = {
         rounding = 8;
         thickness = 0;

@@ -14,7 +14,7 @@
 
     ## Office
     libreoffice
-    gnome-calculator
+    # gnome-calculator
 
     # Browsers
     firefox

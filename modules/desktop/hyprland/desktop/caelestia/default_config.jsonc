@@ -1,3 +1,4 @@
+// this file is used as reference of default config for Caelestia, you can copy it to ~/.config/caelestia/config.jsonc and DO NOT edit this
 {
     "appearance": {
         "mediaGifSpeedAdjustment": 300,
