@@ -88,6 +88,6 @@
     wget
     gh
     # TODO: Research for this later
-    # xdg-utils
+    xdg-utils # for copying to clipboard and opening urls from terminal
   ];
 }

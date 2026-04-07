@@ -3,8 +3,7 @@
   wayland.windowManager.hyprland = {
     extraConfig = ''
       bind = $mod, space, global, caelestia:launcher
-      bind = $mod SHIFT, S, global, caelestia:screenshotFreeze
-      bind = $mod SHIFT ALT, S, global, caelestia:screenshot
+      bind = $mod, S, global, caelestia:screenshotFreeze
 
       bindl = $mod SHIFT, L, global, caelestia:lock
       bindl = , XF86MonBrightnessUp, global, caelestia:brightnessUp
@@ -29,7 +28,7 @@
 
         # Clipboard and emoji pickers
         "$mod, Period, exec, caelestia emoji -p"
-        "$mod, V, exec, caelestia clipboard -d"
+        "$mod, V, exec, caelestia clipboard"
       ];
       bindl = [
         ", Print, exec, caelestia screenshot"

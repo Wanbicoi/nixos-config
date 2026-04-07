@@ -53,9 +53,14 @@
       "$mod SHIFT, 9, movetoworkspace, 9"
       "$mod SHIFT, 0, movetoworkspace, 10"
 
+      # wf-recorder toggles: fullscreen, region, and fullscreen with audio.
+      # "$mod SHIFT, R, exec, sh -c 'if pgrep -x wf-recorder >/dev/null; then pkill -INT -x wf-recorder && hyprctl notify 1 2000 \"rgb(8ec07c)\" \"wf-recorder stopped\"; else mkdir -p \"$HOME/Videos/Recordings\"; hyprctl notify 1 2000 \"rgb(83a598)\" \"wf-recorder fullscreen\"; wf-recorder -f \"$HOME/Videos/Recordings/wf-$(date +%Y-%m-%d_%H-%M-%S).mp4\"; fi'"
+      # "$mod SHIFT, G, exec, sh -c 'if pgrep -x wf-recorder >/dev/null; then pkill -INT -x wf-recorder && hyprctl notify 1 2000 \"rgb(8ec07c)\" \"wf-recorder stopped\"; else mkdir -p \"$HOME/Videos/Recordings\"; geom=$(slurp) || exit 0; hyprctl notify 1 2000 \"rgb(fabd2f)\" \"wf-recorder region\"; wf-recorder -g \"$geom\" -f \"$HOME/Videos/Recordings/wf-region-$(date +%Y-%m-%d_%H-%M-%S).mp4\"; fi'"
+      # "$mod SHIFT, A, exec, sh -c 'if pgrep -x wf-recorder >/dev/null; then pkill -INT -x wf-recorder && hyprctl notify 1 2000 \"rgb(8ec07c)\" \"wf-recorder stopped\"; else mkdir -p \"$HOME/Videos/Recordings\"; hyprctl notify 1 2000 \"rgb(d3869b)\" \"wf-recorder with audio\"; wf-recorder -a -f \"$HOME/Videos/Recordings/wf-audio-$(date +%Y-%m-%d_%H-%M-%S).mp4\"; fi'"
+
       # Example special workspace (scratchpad)
-      "$mod, S, togglespecialworkspace, magic"
-      "$mod SHIFT, S, movetoworkspace, special:magic"
+      # "$mod, S, togglespecialworkspace, magic"
+      # "$mod SHIFT, S, movetoworkspace, special:magic"
 
       # Scroll through existing workspaces with mainMod + scroll
       "$mod, mouse_down, workspace, e+1"

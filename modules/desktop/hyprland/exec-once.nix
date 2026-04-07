@@ -11,25 +11,16 @@
     # Power/battery alert daemon.
     # "poweralertd &"
     # Keep clipboard contents persistent across app exits.
-    # "wl-clip-persist --clipboard both &"
-    # Store clipboard changes into cliphist.
-    # "wl-paste --watch cliphist store &"
+    # TODO: make this modular
+    "wl-clip-persist --clipboard both &"
+    "wl-paste --type text --watch cliphist store &"
+    "wl-paste --type image --watch cliphist store &"
+    "udiskie --automount --notify --smart-tray &"
+    
     # Launch commonly used apps at session start.
     "firefox &"
     "code &"
-    # Top status bar.
-    # "waybar &"
-    # Caelestia is started by its systemd user service.
-    # "caelestia shell -d &"
-    # Notification daemon and control center. 
-    # "swaync &"
-    # Auto-mount removable drives with tray notifications.
-    "udiskie --automount --notify --smart-tray &"
     # Set cursor theme and size for the session.
     "hyprctl setcursor Bibata-Modern-Ice 20 &"
-    # Initialize wallpaper script.
-    # "init-wallpaper &"
-    # "awww-daemon &"
-    # "awww img -t none ~/nixos-config/wallpapers/space.png"
   ];
 }
