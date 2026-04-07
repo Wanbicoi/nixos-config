@@ -86,6 +86,7 @@
     # socat
     unzip
     wget
+    gh
     # TODO: Research for this later
     # xdg-utils
   ];

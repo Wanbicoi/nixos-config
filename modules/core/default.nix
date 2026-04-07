@@ -10,7 +10,8 @@
     ./services.nix
     ./system.nix
     ./user.nix
-    # ./fonts.nix
+    ./displaymanager.nix
+    ./fonts.nix
     # TODO: Comback later
     # ./pipewire.nix
     # ./wayland.nix

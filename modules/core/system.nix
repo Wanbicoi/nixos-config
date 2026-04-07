@@ -28,9 +28,6 @@
     wget
     git
     neovim
-    nil
-    nixd
-    nixfmt
   ];
   system.stateVersion = "25.11";
   nixpkgs.config.allowUnfree = true;

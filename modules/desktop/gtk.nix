@@ -53,7 +53,7 @@ in
       };
     };
   };
-
+  dconf.enable = true;
   dconf.settings = {
     "org/gnome/desktop/interface" = {
       gtk-theme = gtk-theme-name;

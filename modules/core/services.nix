@@ -31,9 +31,5 @@
     # };
 
     udisks2.enable = true;
-    displayManager.sddm = {
-      enable = true;
-      wayland.enable = true; # Ensures SDDM runs on Wayland
-    };
   };
 }

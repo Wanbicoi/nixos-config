@@ -23,12 +23,17 @@
       "match:title ^(Volume Control)$, size 700 450"
       "match:title ^(Volume Control)$, move 40 55%"
 
+      "match:class ^(xdg-desktop-portal-gtk)$, dim_around on"
+      "match:class ^(xdg-desktop-portal-gtk)$, float on"
+      "match:class ^(xdg-desktop-portal-gtk)$, size 1000 700"
+
       "match:title ^(Picture-in-Picture)$, pin on"
       "match:title ^(Picture-in-Picture)$, float on"
 
       "match:class ^(firefox)$, workspace 1"
+      "match:class ^(edge)$, workspace 1"
       "match:class ^(code)$, workspace 2"
-      "match:class ^(zen-beta)$, workspace 1"
+      "match:class ^(kitty)$, workspace 3"
       "match:class ^(Gimp-2.10)$, workspace 4"
       "match:class ^(Aseprite)$, workspace 4"
       "match:class ^(Audacious)$, workspace 5"
@@ -41,8 +46,6 @@
       "match:class ^(mpv)$, idle_inhibit focus"
       "match:class ^(zen-beta)$, match:title ^(.*YouTube.*)$, idle_inhibit focus"
       "match:class ^(zen)$, idle_inhibit fullscreen"
-
-      "match:class ^(xdg-desktop-portal-gtk)$, dim_around on"
 
       "match:xwayland true, rounding 0"
 

@@ -20,6 +20,8 @@
       "$mod, F, togglefloating,"
       "$mod, P, pseudo, # dwindle"
       "$mod, J, layoutmsg, togglesplit # dwindle"
+      # Copy active window metadata (class/title/etc.) to clipboard for window rules.
+      "$mod, I, exec, sh -c 'hyprctl activewindow | wl-copy'"
 
       # Move focus with mainMod + arrow keys
       "$mod, left, movefocus, l"
