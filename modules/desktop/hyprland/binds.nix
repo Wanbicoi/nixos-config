@@ -3,7 +3,7 @@
   wayland.windowManager.hyprland.settings = {
     "$mod" = "SUPER";
     "$terminal" = "kitty";
-    "$fileManager" = "nemo";
+    "$fileManager" = "dolphin";
 
     # Hyprland bind behavior tuning.
     binds = {

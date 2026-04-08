@@ -15,5 +15,6 @@
     # ./hyprlock.nix
     # ./variables.nix
     ./env-vars.nix
+    ./wlsunset.nix
   ];
 }

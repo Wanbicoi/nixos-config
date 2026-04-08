@@ -5,8 +5,8 @@
   ];
   # TODO: Move to custom
   home.packages = with pkgs; [
-    wofi
-    awww # Animated wallpaper daemon for Wayland
+    # wofi
+    # awww # Animated wallpaper daemon for Wayland
     # NOTE: No need these since the caelestia already has it
     # grimblast # Screenshot helper script for Hyprland/Sway workflows
     # hyprpicker # Color picker for Wayland compositors
@@ -25,8 +25,8 @@
 
     # glib # Core GNOME utility library used by many desktop apps
     wayland # Wayland client and protocol libraries/tools
-    direnv # Auto-load environment variables per project directory
-    tesseract # OCR engine to extract text from images/screenshots
+    # direnv # Auto-load environment variables per project directory
+    # tesseract # OCR engine to extract text from images/screenshots
   ];
   # TODO: Research for this later
   # systemd.user.targets.hyprland-session.Unit.Wants = [

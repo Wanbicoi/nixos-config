@@ -12,9 +12,9 @@
     # nm-connection-editor # Not available in nixpkgs, networkmanagerapplet provides GUI access
 
     udiskie # Auto-mount removable media
-    awww
-
-    nemo # File manager
+    # awww
+    kdePackages.dolphin # Or just 'dolphin' depending on your NixOS version
+    kdePackages.ark # The archive manager that provides the Compress menu
   ];
 
   # gtk = {
