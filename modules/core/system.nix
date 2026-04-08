@@ -33,6 +33,16 @@
   nixpkgs.config.allowUnfree = true;
 
   time.timeZone = "Asia/Ho_Chi_Minh";
+  i18n.inputMethod = {
+    type = "ibus";
+    enable = true;
+    enableGtk2 = true;
+    enableGtk3 = true;
+    ibus = {
+      waylandFrontend = true;
+      engines = with pkgs.ibus-engines; [ bamboo ];
+    };
+  };
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "vi_VN";

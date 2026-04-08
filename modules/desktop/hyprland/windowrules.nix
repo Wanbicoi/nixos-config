@@ -11,6 +11,8 @@
       "match:class ^(org.gnome.Calculator)$, float on"
       "match:class ^(org.gnome.FileRoller)$, float on"
       "match:class ^(org.pulseaudio.pavucontrol)$, float on"
+      "match:class ^(org.xfce.mousepad)$, float on"
+      "match:class ^(org.xfce.mousepad)$, center on"
 
       "match:class ^(rofi)$, pin on"
       "match:class ^(waypaper)$, pin on"

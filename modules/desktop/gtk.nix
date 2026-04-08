@@ -8,10 +8,10 @@ let
   gtk-theme = pkgs.colloid-gtk-theme.override {
     colorVariants = [ "light" ];
     themeVariants = [ "default" ];
+    sizeVariants = [ "compact" ];
     tweaks = [
       "gruvbox"
       "rimless"
-      "float"
     ];
   };
   icon-theme-name = "Papirus-Light";
