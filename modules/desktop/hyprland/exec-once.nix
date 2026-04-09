@@ -1,7 +1,7 @@
 { ... }:
 {
   wayland.windowManager.hyprland.settings.exec-once = [
-    "ibus-daemon --daemonize --replace --xim &"
+    # "ibus-daemon --daemonize --replace --xim &"
     # "hash dbus-update-activation-environment 2>/dev/null"
     # "dbus-update-activation-environment --all --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
     # "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
@@ -16,7 +16,7 @@
     "wl-clip-persist --clipboard both &"
     "wl-paste --type text --watch cliphist store &"
     "wl-paste --type image --watch cliphist store &"
-    "udiskie --automount --notify --smart-tray &"
+    # "udiskie --automount --notify --smart-tray &"
     
     # Launch commonly used apps at session start.
     "firefox &"

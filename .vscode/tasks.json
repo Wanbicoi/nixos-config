@@ -7,13 +7,21 @@
             "label": "Build and switch",
             "type": "shell",
             "command": "sudo nixos-rebuild switch --flake .#thinkpad",
-            "problemMatcher": []
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         },
         {
             "label": "Test",
             "type": "shell",
             "command": "sudo nixos-rebuild test --flake .#thinkpad",
-            "problemMatcher": []
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }

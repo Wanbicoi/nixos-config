@@ -34,14 +34,14 @@
 
   time.timeZone = "Asia/Ho_Chi_Minh";
   i18n.inputMethod = {
-    type = "ibus";
     enable = true;
+    type = "fcitx5";
     enableGtk2 = true;
     enableGtk3 = true;
-    ibus = {
-      waylandFrontend = true;
-      engines = with pkgs.ibus-engines; [ bamboo ];
-    };
+    fcitx5.addons = with pkgs; [
+      fcitx5-bamboo
+      fcitx5-gtk
+    ];
   };
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.extraLocaleSettings = {
