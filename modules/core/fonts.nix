@@ -7,7 +7,7 @@
       defaultFonts = {
         monospace = [
           "Cascadia Code NF"
-          "Maple Mono"
+          "Maple Mono NF"
           "JetBrainsMono Nerd Font"
         ];
         sansSerif = [ "Public Sans" ];
@@ -19,6 +19,7 @@
     packages = with pkgs; [
       noto-fonts
       public-sans
+      maple-mono.NF
 
       cascadia-code
       nerd-fonts.jetbrains-mono

@@ -1,5 +1,6 @@
 { ... }:
 {
+  programs.gpu-screen-recorder.enable = true;
   imports = [
     ./bootloader.nix
     ./xserver.nix

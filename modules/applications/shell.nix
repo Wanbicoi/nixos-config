@@ -7,14 +7,13 @@
     syntaxHighlighting.enable = true;
     enableCompletion = true;
   };
-
-  programs.kitty = {
+  programs.alacritty = {
     enable = true;
-    font.name = "Maple Mono";
-    theme = "GitHub Light Colorblind";
+    theme = "github_light_colorblind";
     settings = {
-      confirm_os_window_close = 0;
-      window_padding_width = 8;
+      font.normal.family = "Maple Mono NF";
+      window.padding.x = 8;
+      window.padding.y = 8;
     };
   };
 }
