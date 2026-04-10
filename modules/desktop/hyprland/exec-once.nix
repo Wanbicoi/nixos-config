@@ -1,6 +1,7 @@
 { ... }:
 {
   wayland.windowManager.hyprland.settings.exec-once = [
+    "fcitx5 &"
     # "ibus-daemon --daemonize --replace --xim &"
     # "hash dbus-update-activation-environment 2>/dev/null"
     # "dbus-update-activation-environment --all --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"

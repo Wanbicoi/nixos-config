@@ -11,10 +11,12 @@
       target = "graphical-session.target";
       environment = [ ];
     };
+    # Take a look to ./default_config.jsonc for default options
     settings = {
       # bar.status = {
       #   showBattery = false;
       # };
+      # appearance.anim.durations.scale = 0;
       paths.wallpaperDir = "~/nixos-config/wallpapers";
       general.idle = {
         lockBeforeSleep = false;
