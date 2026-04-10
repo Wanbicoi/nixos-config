@@ -8,6 +8,8 @@
       swaylock = { };
       sudo.fprintAuth = true;
       login.fprintAuth = true;
+      login.enableGnomeKeyring = true;
+      sddm.enableGnomeKeyring = true;
       # hyprlock = {
       #   fprintAuth = true;
       # };

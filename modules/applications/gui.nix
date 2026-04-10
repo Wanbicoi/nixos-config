@@ -5,6 +5,7 @@
     defaultApplications = {
       "x-scheme-handler/http" = [ "firefox.desktop" ];
       "x-scheme-handler/https" = [ "firefox.desktop" ];
+      "x-scheme-handler/obsidian" = [ "obsidian.desktop" ];
       "text/html" = [ "firefox.desktop" ];
       "application/xhtml+xml" = [ "firefox.desktop" ];
     };
@@ -37,6 +38,8 @@
     obsidian
     vscode
 
+    anki
+    
     # TODO: remove later
     gpclient
   ];
