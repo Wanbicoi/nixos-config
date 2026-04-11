@@ -52,8 +52,8 @@
       "match:xwayland true, rounding 0"
 
       # No gaps when only
-      "border_size 0, match:float 0, match:workspace w[tv1]"
-      "rounding 0, match:float 0, match:workspace w[tv1]"
+      # "border_size 0, match:float 0, match:workspace w[tv1]"
+      # "rounding 0, match:float 0, match:workspace w[tv1]"
       "border_size 0, match:float 0, match:workspace f[1]"
       "rounding 0, match:float 0, match:workspace f[1]"
     ];

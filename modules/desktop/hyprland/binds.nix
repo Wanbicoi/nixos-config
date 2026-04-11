@@ -58,8 +58,10 @@
       # "$mod SHIFT, S, movetoworkspace, special:magic"
 
       # Scroll through existing workspaces with mainMod + scroll
-      "$mod, mouse_down, workspace, e+1"
-      "$mod, mouse_up, workspace, e-1"
+      # "$mod, mouse_down, workspace, e+1"
+      # "$mod, mouse_up, workspace, e-1"
+
+      "$mod, TAB, workspace, previous"
 
       # Volume keys on press; brightness and media are handled in the Caelestia module.
       ",XF86AudioRaiseVolume, exec, wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"

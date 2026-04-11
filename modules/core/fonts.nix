@@ -3,11 +3,15 @@
   fonts = {
     fontconfig = {
       enable = true;
-
+      antialias = true;
+      hinting = {
+        enable = true;
+        style = "slight"; # 'slight' is usually closest to Windows; 'full' can look blocky
+      };
       defaultFonts = {
         monospace = [
-          "Cascadia Code NF"
           "Maple Mono NF"
+          "Cascadia Code NF"
           "JetBrainsMono Nerd Font"
         ];
         sansSerif = [ "Public Sans" ];

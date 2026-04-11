@@ -19,8 +19,8 @@
     };
 
     general = {
-      gaps_in = 5;
-      gaps_out = 10;
+      gaps_in = 4;
+      gaps_out = 4;
     };
 
     misc = {
@@ -44,7 +44,7 @@
     };
 
     decoration = {
-      rounding = 20;
+      rounding = 8;
       rounding_power = 2;
 
       blur = {
