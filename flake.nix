@@ -9,7 +9,6 @@
   };
 
   inputs = {
-    # TODO: check for unstable packages: vscode version
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager = {
       url = "github:nix-community/home-manager";

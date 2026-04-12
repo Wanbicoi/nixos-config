@@ -3,11 +3,11 @@
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
-      "x-scheme-handler/http" = [ "microsoft-edge.desktop" ];
-      "x-scheme-handler/https" = [ "microsoft-edge.desktop" ];
+      "x-scheme-handler/http" = [ "google-chrome.desktop" ];
+      "x-scheme-handler/https" = [ "google-chrome.desktop" ];
       "x-scheme-handler/obsidian" = [ "obsidian.desktop" ];
-      "text/html" = [ "microsoft-edge.desktop" ];
-      "application/xhtml+xml" = [ "microsoft-edge.desktop" ];
+      "text/html" = [ "google-chrome.desktop" ];
+      "application/xhtml+xml" = [ "google-chrome.desktop" ];
     };
   };
 
