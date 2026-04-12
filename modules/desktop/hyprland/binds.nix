@@ -20,8 +20,10 @@
       "$mod, F, togglefloating,"
       "$mod, P, pseudo, # dwindle"
       "$mod, J, layoutmsg, togglesplit # dwindle"
+      "$mod SHIFT, M, exec, hyprctl dispatch dpms on eDP-1 && hyprctl keyword monitor \"eDP-1, preferred, auto, 1\""
       # Open a readable preview window with active metadata (class/title/etc.) for window rules.
-      "$mod, I, exec, sh -c 'tmp=$(mktemp --suffix=.txt); hyprctl activewindow > \"$tmp\"; mousepad \"$tmp\"; rm -f \"$tmp\"'"
+      # NOTE: caelestia already have the UI for it
+      # "$mod, I, exec, sh -c 'tmp=$(mktemp --suffix=.txt); hyprctl activewindow > \"$tmp\"; mousepad \"$tmp\"; rm -f \"$tmp\"'"
 
       # Move focus with mainMod + arrow keys
       "$mod, left, movefocus, l"
@@ -52,7 +54,7 @@
       "$mod SHIFT, 8, movetoworkspace, 8"
       "$mod SHIFT, 9, movetoworkspace, 9"
       "$mod SHIFT, 0, movetoworkspace, 10"
-      
+
       # Example special workspace (scratchpad)
       # "$mod, S, togglespecialworkspace, magic"
       # "$mod SHIFT, S, movetoworkspace, special:magic"

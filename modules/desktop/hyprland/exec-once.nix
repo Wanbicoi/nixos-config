@@ -23,6 +23,6 @@
     "firefox &"
     "code &"
     # Set cursor theme and size for the session.
-    "hyprctl setcursor Bibata-Modern-Ice 20 &"
+    "hyprctl setcursor oreo-cursors-plus 20 &"
   ];
 }

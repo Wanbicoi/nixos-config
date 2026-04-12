@@ -32,8 +32,8 @@ in
       package = pkgs.papirus-icon-theme.override { color = "blue"; };
     };
     cursorTheme = {
-      name = "Bibata-Modern-Ice";
-      package = pkgs.bibata-cursors;
+      name = "oreo-cursors-plus";
+      package = pkgs.oreo-cursors-plus;
       size = 24;
     };
 
@@ -63,8 +63,8 @@ in
   };
 
   home.pointerCursor = {
-    name = "Bibata-Modern-Ice";
-    package = pkgs.bibata-cursors;
+    name = "oreo-cursors-plus";
+    package = pkgs.oreo-cursors-plus;
     size = 20;
   };
 }

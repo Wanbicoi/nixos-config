@@ -9,6 +9,7 @@
       sudo.fprintAuth = true;
       login.fprintAuth = true;
       login.enableGnomeKeyring = true;
+      login.unixAuth = true;
       sddm.enableGnomeKeyring = true;
       # hyprlock = {
       #   fprintAuth = true;

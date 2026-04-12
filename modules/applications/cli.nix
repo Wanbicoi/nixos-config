@@ -77,7 +77,7 @@
     # ffmpeg
     # file                              # Show file information
     jq                                # JSON processor
-    # killall
+    killall
     # libnotify
     # mimeo
     # openssl

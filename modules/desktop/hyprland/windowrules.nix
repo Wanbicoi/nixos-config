@@ -13,6 +13,10 @@
       "match:class ^(org.pulseaudio.pavucontrol)$, float on"
       "match:class ^(org.xfce.mousepad)$, float on"
       "match:class ^(org.xfce.mousepad)$, center on"
+      
+      "match:class ^(nwg-displays)$, float on"
+      "match:class ^(nwg-displays)$, center on"
+      "match:class ^(nwg-displays)$, size 1200 800"
 
       "match:class ^(rofi)$, pin on"
       "match:class ^(waypaper)$, pin on"
@@ -27,7 +31,7 @@
 
       "match:class ^(xdg-desktop-portal-gtk)$, dim_around on"
       "match:class ^(xdg-desktop-portal-gtk)$, float on"
-      "match:class ^(xdg-desktop-portal-gtk)$, size 1000 700"
+      "match:class ^(xdg-desktop-portal-gtk)$, size 1200 800"
 
       "match:title ^(Picture-in-Picture)$, pin on"
       "match:title ^(Picture-in-Picture)$, float on"
@@ -36,7 +40,7 @@
       "match:class ^(edge)$, workspace 1"
       "match:class ^(code)$, workspace 2"
       "match:class ^(Alacritty)$, workspace 3"
-      "match:class ^(obsidian)$, workspace 4"
+      "match:class ^(obsidian.*)$, workspace 4"
       "match:class ^(Aseprite)$, workspace 4"
       "match:class ^(Audacious)$, workspace 5"
       "match:class ^(Spotify)$, workspace 5"

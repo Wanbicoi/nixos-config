@@ -14,6 +14,7 @@
 
     # NOTE: for https://docs.noctalia.dev/getting-started/nixos/
     # power-profiles-daemon.enable = true;
+    # NOTE: For lib detecting if the system is on battery or not
     # upower.enable = true;
 
     # needed for GNOME services outside of GNOME Desktop
