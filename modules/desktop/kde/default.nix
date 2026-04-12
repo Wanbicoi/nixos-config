@@ -9,7 +9,5 @@
   home.packages = with pkgs; [
     vscode
     firefox
-    thunar
-    thunar-volman
   ];
 }

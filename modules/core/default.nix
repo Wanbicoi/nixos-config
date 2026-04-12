@@ -1,6 +1,5 @@
 { ... }:
 {
-  programs.gpu-screen-recorder.enable = true;
   imports = [
     ./bootloader.nix
     ./xserver.nix
@@ -13,6 +12,7 @@
     ./user.nix
     ./displaymanager.nix
     ./fonts.nix
+    ./system-programs.nix
     # TODO: Comback later
     # ./pipewire.nix
     # ./wayland.nix

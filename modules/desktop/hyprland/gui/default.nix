@@ -13,8 +13,6 @@
 
     # udiskie # Auto-mount removable media
     # awww
-    kdePackages.dolphin # Or just 'dolphin' depending on your NixOS version
-    kdePackages.ark # The archive manager that provides the Compress menu
   ];
 
   # gtk = {

@@ -4,14 +4,12 @@
   ...
 }:
 let
-  gtk-theme-name = "Colloid-Blue-Light-Gruvbox";
-  gtk-theme = pkgs.colloid-gtk-theme.override {
-    colorVariants = [ "light" ];
-    themeVariants = [ "default" ];
-    sizeVariants = [ "compact" ];
+  gtk-theme-name = "Orchis-Light-Compact";
+  gtk-theme = pkgs.orchis-theme.override {
+    border-radius = 8;
     tweaks = [
-      "gruvbox"
-      "rimless"
+      "compact"
+      "macos"
     ];
   };
   icon-theme-name = "Papirus-Light";

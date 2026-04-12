@@ -32,7 +32,7 @@
             "mpv"
           ];
           explorer = [
-            "dolphin"
+            "thunar"
           ];
         };
       };
