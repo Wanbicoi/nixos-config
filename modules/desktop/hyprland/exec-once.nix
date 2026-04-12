@@ -20,9 +20,9 @@
     # "udiskie --automount --notify --smart-tray &"
     
     # Launch commonly used apps at session start.
-    "firefox &"
+    "google-chrome &"
     "code &"
     # Set cursor theme and size for the session.
-    "hyprctl setcursor oreo-cursors-plus 20 &"
+    "hyprctl setcursor Bibata-Modern-Ice 20 &"
   ];
 }
