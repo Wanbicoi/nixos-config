@@ -12,5 +12,7 @@
     XMODIFIERS = "@im=fcitx";
     QT_IM_MODULE = "fcitx"; # Fallback for Qt5
     QT_IM_MODULES = "wayland;fcitx"; # Strategy for Qt 6.10.2+
+
+    DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/docker.sock"; # For rootless Docker
   };
 }

@@ -20,6 +20,7 @@
       "$mod, F, togglefloating,"
       "$mod, P, pseudo, # dwindle"
       "$mod, J, layoutmsg, togglesplit # dwindle"
+      "$mod, G, togglegroup"
       "$mod SHIFT, M, exec, hyprctl dispatch dpms on eDP-1 && hyprctl keyword monitor \"eDP-1, preferred, auto, 1\""
       # Open a readable preview window with active metadata (class/title/etc.) for window rules.
       # NOTE: caelestia already have the UI for it

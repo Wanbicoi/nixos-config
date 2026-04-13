@@ -47,7 +47,8 @@
     # gtt                               # google translate TUI
     # toipe                             # typing test in the terminal
     # ttyper                            # cli typing test
-
+    lazygit
+    lazydocker
     ## Monitoring / fetch
     # htop
     # onefetch                          # fetch utility for git repo

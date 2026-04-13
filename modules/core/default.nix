@@ -10,6 +10,7 @@
     ./services.nix
     ./system.nix
     ./user.nix
+    ./virtualization.nix
     ./displaymanager.nix
     ./fonts.nix
     ./system-programs.nix

@@ -62,6 +62,18 @@
       };
     };
 
+    group = {
+      insert_after_current = true;
+      "col.border_active" = "rgba(33ccffee)";
+      "col.border_inactive" = "rgba(595959aa)";
+      groupbar = {
+        enabled = true;
+        font_size = 12;
+        gradients = true;
+        "col.active" = "rgba(33ccffee)";
+      };
+    };
+
     animations = {
       enabled = true;
 
