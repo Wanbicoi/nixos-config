@@ -20,6 +20,6 @@
     # python312Packages.ipython
     nodejs_22
     yarn
-    dotnet-sdk_9
+    dotnet-sdk_10
   ];
 }
