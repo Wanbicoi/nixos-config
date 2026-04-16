@@ -21,6 +21,7 @@
       "$mod, P, pseudo, # dwindle"
       "$mod, J, layoutmsg, togglesplit # dwindle"
       "$mod, G, togglegroup"
+      "$mod, TAB, changegroupactive, f"
       "$mod SHIFT, M, exec, hyprctl dispatch dpms on eDP-1 && hyprctl keyword monitor \"eDP-1, preferred, auto, 1\""
       # Open a readable preview window with active metadata (class/title/etc.) for window rules.
       # NOTE: caelestia already have the UI for it
@@ -63,8 +64,6 @@
       # Scroll through existing workspaces with mainMod + scroll
       # "$mod, mouse_down, workspace, e+1"
       # "$mod, mouse_up, workspace, e-1"
-
-      "$mod, TAB, workspace, previous"
 
       # Volume keys on press; brightness and media are handled in the Caelestia module.
       ",XF86AudioRaiseVolume, exec, wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"

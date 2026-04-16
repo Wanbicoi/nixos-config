@@ -19,6 +19,9 @@
     enable = true;
     nix-direnv.enable = true;
     enableZshIntegration = true;
+    config = {
+      global.hide_env_diff = true; # Specifically hides that big list of variables
+    };
   };
 
   home.packages = with pkgs; [

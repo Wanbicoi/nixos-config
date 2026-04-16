@@ -13,7 +13,8 @@
       float_switch_override_focus = 0;
 
       touchpad = {
-        disable_while_typing = false;
+        scroll_factor = 0.3;
+        disable_while_typing = true;
         natural_scroll = true;
       };
     };

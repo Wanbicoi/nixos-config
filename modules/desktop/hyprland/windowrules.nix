@@ -38,8 +38,10 @@
 
       "match:class ^(firefox)$, workspace 1"
       "match:class ^(microsoft-edge)$, workspace 1"
+      "match:class ^(google-chrome)$, workspace 1"
       "match:class ^(code)$, workspace 2"
       "match:class ^(Alacritty)$, workspace 3"
+      "match:class ^(electron)$, match:title ^(.*Obsidian.*)$, workspace 4"
       "match:class ^(obsidian.*)$, workspace 4"
       "match:class ^(Aseprite)$, workspace 4"
       "match:class ^(Audacious)$, workspace 5"
@@ -62,10 +64,10 @@
       "rounding 0, match:float 0, match:workspace f[1]"
     ];
 
-    layerrule = [
-      "match:namespace rofi, dim_around on"
-      "match:namespace swaync-control-center, dim_around on"
-    ];
+    # layerrule = [
+    #   "match:namespace rofi, dim_around on"
+    #   "match:namespace swaync-control-center, dim_around on"
+    # ];
 
     # No gaps when only
     # workspace = [
