@@ -22,6 +22,16 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "label": "Flake update",
+            "type": "shell",
+            "command": "nix flake update",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }
