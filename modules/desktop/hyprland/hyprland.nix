@@ -15,7 +15,7 @@
     wl-clip-persist # Keep clipboard content after source app exits
     cliphist # Clipboard history manager for wl-clipboard
     wl-clipboard
-    
+    wtype
     # TODO: consider kooha # GUI for wf-recorder to simplify screen recording on Wayland
     # slurp # Select a screen region (used by screenshot/video tools)
     # wf-recorder # Screen recorder for Wayland sessions

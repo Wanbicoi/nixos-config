@@ -27,8 +27,8 @@
         "$mod, F12, exec, caelestia toggle todo"
 
         # Clipboard and emoji pickers
-        "$mod, Period, exec, caelestia emoji -p"
-        "$mod, V, exec, caelestia clipboard"
+        "$mod, Period, exec, caelestia emoji -p && sleep 0.1 && wtype -M ctrl v -m ctrl"
+        "$mod, V, exec, caelestia clipboard && sleep 0.1 && wtype -M ctrl v -m ctrl"
       ];
       bindl = [
         ", Print, exec, caelestia screenshot"
