@@ -35,6 +35,7 @@
     firefox
     microsoft-edge
     google-chrome
+    brave
 
     obsidian
     vscode

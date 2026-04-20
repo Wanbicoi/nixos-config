@@ -10,6 +10,7 @@
     ./windowrules.nix
     ./gui
     ./desktop/caelestia
+    ./kanshi.nix
     # ./waybar
     # ./noctalia.nix
     # ./hyprlock.nix
