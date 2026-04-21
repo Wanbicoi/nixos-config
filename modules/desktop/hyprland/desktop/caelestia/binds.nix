@@ -2,7 +2,7 @@
 {
   wayland.windowManager.hyprland = {
     extraConfig = ''
-      bind = $mod, space, global, caelestia:launcher
+      bind = $mod, space, exec, ulauncher
       bind = $mod, S, global, caelestia:screenshotFreeze
 
       bindl = $mod SHIFT, L, global, caelestia:lock

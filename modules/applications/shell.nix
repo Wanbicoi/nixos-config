@@ -332,6 +332,7 @@
     theme = "github_light_colorblind";
     settings = {
       font.normal.family = "Maple Mono NF";
+      font.size = 10;
       window.opacity = 0.80;
       window.padding.x = 8;
       window.padding.y = 8;

@@ -44,5 +44,9 @@
     
     # TODO: remove later
     gpclient
+
+    ulauncher
+
+    pi-coding-agent
   ];
 }

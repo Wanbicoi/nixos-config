@@ -13,7 +13,13 @@
       "match:class ^(org.pulseaudio.pavucontrol)$, float on"
       "match:class ^(org.xfce.mousepad)$, float on"
       "match:class ^(org.xfce.mousepad)$, center on"
-      
+
+      # Remove border and shadow from the main Ulauncher window
+      "match:class ^(ulauncher)$, decorate off"
+
+      "match:title ^(Ulauncher Preferences)$, float on"
+      "match:title ^(Ulauncher Preferences)$, center on"
+
       "match:class ^(nwg-displays)$, float on"
       "match:class ^(nwg-displays)$, center on"
       "match:class ^(nwg-displays)$, size 1200 800"
@@ -63,7 +69,6 @@
       "border_size 0, match:float 0, match:workspace f[1]"
       "rounding 0, match:float 0, match:workspace f[1]"
     ];
-
     # layerrule = [
     #   "match:namespace rofi, dim_around on"
     #   "match:namespace swaync-control-center, dim_around on"
