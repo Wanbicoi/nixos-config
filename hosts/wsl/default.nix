@@ -14,6 +14,8 @@
 
   networking.hostName = "nixos-wsl";
 
+  programs.zsh.enable = true;
+
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
