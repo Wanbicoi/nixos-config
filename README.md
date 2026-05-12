@@ -1,14 +1,13 @@
 # NixOS config (flake + Home Manager)
 
-This repo manages the full system config for host `nixos`.
+This repo manages the full system config for host `thinkpad` and a minimal WSL target.
 
 ## Layout
 
 - `flake.nix`: flake entrypoint.
-- `hosts/nixos/default.nix`: host-level imports and state version.
-- `hosts/nixos/hardware-configuration.nix`: generated hardware config for this host.
-- `modules/system/*`: reusable NixOS modules.
-- `home/trung/*`: Home Manager config for user `trung`.
+- `hosts/laptop-thinkbook-14-g6-irl/default.nix`: laptop host config.
+- `hosts/wsl/default.nix`: WSL host config.
+- `modules/*`: reusable NixOS/Home Manager modules.
 
 ## First-time setup
 
@@ -20,9 +19,16 @@ sudo ln -s ~/nixos-config /etc/nixos
 
 ## Rebuild
 
+Laptop:
 ```bash
 cd ~/nixos-config
-sudo nixos-rebuild switch --flake .#nixos
+sudo nixos-rebuild switch --flake .#thinkpad
+```
+
+WSL:
+```bash
+cd ~/nixos-config
+sudo nixos-rebuild switch --flake .#wsl
 ```
 
 ## Update flake inputs
@@ -30,11 +36,11 @@ sudo nixos-rebuild switch --flake .#nixos
 ```bash
 cd ~/nixos-config
 nix flake update
-sudo nixos-rebuild switch --flake .#nixos
+sudo nixos-rebuild switch --flake .#thinkpad
 ```
 
 ## Notes
 
-- User apps/tooling are managed via Home Manager in `home/trung`.
-- Node backend tools are in `home/trung/dev.nix` (`nodejs_22`, `httpie`).
+- WSL uses `hosts/wsl/default.nix` with `wsl.enable = true;` and a smaller Home Manager profile.
+- Node backend tools are in `modules/applications/dev.nix`.
 - Add more modules later by creating files and importing them from host or home config.
