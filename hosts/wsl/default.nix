@@ -43,8 +43,8 @@
         git = {
           enable = true;
           settings.user = {
-            name = "Trung Hoang";
-            email = "trung.hoang@angi.com";
+            name = "Troy Hoang";
+            email = "troy.hoang@laidon.com";
           };
         };
       };
