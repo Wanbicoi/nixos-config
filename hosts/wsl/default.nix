@@ -6,6 +6,10 @@
     ../../modules/core/system.nix
   ];
 
+  programs.nix-ld.enable = true;
+
+  environment.systemPackages = with pkgs; [ wget ];
+
   wsl = {
     enable = true;
     defaultUser = "trung";
@@ -38,8 +42,10 @@
         home-manager.enable = true;
         git = {
           enable = true;
-          userName = "Trung Hoang";
-          userEmail = "trung.hoang@angi.com";
+          settings.user = {
+            name = "Trung Hoang";
+            email = "trung.hoang@angi.com";
+          };
         };
       };
 
