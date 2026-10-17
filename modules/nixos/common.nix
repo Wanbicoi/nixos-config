@@ -18,6 +18,10 @@
     options = "--delete-older-than 14d";
   };
 
+  # Install zsh system-wide so it can be used as a login shell. The actual
+  # shell configuration lives in Home Manager (home/<user>/).
+  programs.zsh.enable = true;
+
   # Minimal toolset available on all NixOS machines. User-level tools belong in
   # home/<user>/ instead.
   environment.systemPackages = with pkgs; [

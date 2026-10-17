@@ -3,7 +3,7 @@
 # A host file wires together the platform modules and user profiles for one
 # machine. Hardware-specific and per-machine values live here.
 
-{ inputs, ... }:
+{ inputs, pkgs, ... }:
 
 {
   imports = [
@@ -17,6 +17,9 @@
   networking.hostName = "nixos-wsl";
 
   wsl.defaultUser = "nixos";
+
+  # Make zsh the login shell (configured via Home Manager).
+  users.users.nixos.shell = pkgs.zsh;
 
   system.stateVersion = "26.05";
 
