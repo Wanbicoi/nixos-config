@@ -1,0 +1,8 @@
+# Build results
+result
+result-*
+
+# Editor / direnv
+.direnv/
+.envrc
+*.swp
