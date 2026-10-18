@@ -1,3 +1,6 @@
+[submodule "agent-config"]
+	path = submodules/agent-config
+	url = git@github.com:CHANGE_ME/agent-config.git
 [submodule "nvim"]
-	path = nvim
+	path = submodules/nvim
 	url = https://github.com/Wanbicoi/nvim-config.git

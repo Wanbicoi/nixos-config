@@ -3,16 +3,19 @@
 
 HOST ?= wsl
 FLAKE ?= .
-NVIM_DIR ?= nvim
+NVIM_DIR ?= submodules/nvim
+AGENT_DIR ?= submodules/agent-config
+AGENT_REMOTE ?= git@github.com:CHANGE_ME/agent-config.git
 FILE ?= secrets/common.yaml
 
 NIXOS_REBUILD = sudo nixos-rebuild
 
 .DEFAULT_GOAL := secrets-edit
 
-.PHONY: help switch build test boot dry update update-input upgrade \
-        fmt fmt-check check hooks gc generations rollback \
-        nvim-init nvim-update secrets-edit clean
+.PHONY: help switch build test boot dry rollback generations \
+        update update-input upgrade check hooks \
+        nvim-init nvim-update secrets-edit \
+        agent-init agent-update agent-remote
 
 help: ## Show this help
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) \
@@ -42,9 +45,6 @@ rollback: ## Roll the system back to the previous generation
 generations: ## List system generations
 	$(NIXOS_REBUILD) list-generations
 
-gc: ## Garbage-collect old system generations
-	sudo nix-collect-garbage -d
-
 ## --- flake ---
 
 update: ## Update all flake inputs
@@ -55,12 +55,6 @@ update-input: ## Update one input: make update-input INPUT=llm-agents
 	nix flake update $(INPUT)
 
 upgrade: update switch ## Update inputs, then activate HOST
-
-fmt: ## Format all Nix files
-	nix fmt
-
-fmt-check: ## Check Nix formatting without writing
-	nix fmt -- --ci
 
 check: ## Evaluate/check the flake (runs pre-commit hooks)
 	nix flake check
@@ -77,10 +71,21 @@ nvim-update: ## Pull the latest nvim-config, stage the new pointer
 	git submodule update --remote $(NVIM_DIR)
 	git add $(NVIM_DIR)
 
+## --- agent config submodule (Pi / Claude Code / OpenCode) ---
+
+agent-init: ## Clone the agent-config submodule
+	git submodule update --init --recursive $(AGENT_DIR)
+
+agent-update: ## Pull the latest agent-config, stage the new pointer
+	git submodule update --remote $(AGENT_DIR)
+	git add $(AGENT_DIR)
+
+agent-remote: ## Point agent-config at your remote: make agent-remote AGENT_REMOTE=git@github.com:you/agent-config.git
+	git submodule set-url $(AGENT_DIR) $(AGENT_REMOTE)
+	git submodule sync $(AGENT_DIR)
+	@echo "Updated $(AGENT_DIR) URL. Commit .gitmodules, then push the repo."
+
 ## --- secrets ---
 
 secrets-edit: ## Edit encrypted secrets (FILE=secrets/common.yaml)
 	sops $(FILE)
-
-clean: ## Remove build result symlinks
-	rm -f result result-*

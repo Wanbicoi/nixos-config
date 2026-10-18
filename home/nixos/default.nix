@@ -6,9 +6,13 @@
 }:
 
 let
-  # The nvim-config git submodule checked out inside this repo. Linked
-  # out-of-store so lazy.nvim (or any plugin manager) can write to it.
-  nvimConfig = "${config.home.homeDirectory}/nixconfig/nvim";
+  # Submodules checked out inside this repo. Linked out-of-store (writable
+  # checkouts, not /nix/store) so their tools can write to them. Keeping the
+  # Claude links out of the store also avoids a Claude Code bug where the
+  # settings watcher enumerates a symlink's parent directory.
+  repoRoot = "${config.home.homeDirectory}/nixconfig";
+  nvimConfig = "${repoRoot}/submodules/nvim";
+  agentConfig = "${repoRoot}/submodules/agent-config";
 in
 {
   imports = [ inputs.sops-nix.homeManagerModules.sops ];
@@ -37,6 +41,25 @@ in
 
   # Use the Lua config from the nvim-config submodule as ~/.config/nvim.
   xdg.configFile."nvim".source = config.lib.file.mkOutOfStoreSymlink nvimConfig;
+
+  # --- Shared agent config (agent-config submodule) ---------------------------
+  # Pi: the whole agent dir (auth/sessions/npm are gitignored in the repo).
+  home.file.".pi/agent".source = config.lib.file.mkOutOfStoreSymlink "${agentConfig}/pi";
+
+  # OpenCode: the whole global config dir.
+  xdg.configFile."opencode".source = config.lib.file.mkOutOfStoreSymlink "${agentConfig}/opencode";
+
+  # Claude Code: only the user-authored subset. ~/.claude/settings.json is left
+  # untouched because Orca rewrites it per machine (see
+  # agent-config/claude/README.md).
+  home.file.".claude/CLAUDE.md".source =
+    config.lib.file.mkOutOfStoreSymlink "${agentConfig}/claude/CLAUDE.md";
+  home.file.".claude/agents".source =
+    config.lib.file.mkOutOfStoreSymlink "${agentConfig}/claude/agents";
+  home.file.".claude/commands".source =
+    config.lib.file.mkOutOfStoreSymlink "${agentConfig}/claude/commands";
+  home.file.".claude/skills".source =
+    config.lib.file.mkOutOfStoreSymlink "${agentConfig}/claude/skills";
 
   programs = {
     home-manager.enable = true;
