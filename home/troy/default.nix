@@ -6,6 +6,7 @@
 {
   imports = [
     ../common
+    ../common/wsl.nix
     ./identity.nix
     ./packages.nix
   ];
