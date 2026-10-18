@@ -46,6 +46,9 @@ in
 
   home.packages = with pkgs; [
     neovim
+    lazygit
+    python3
+    pnpm
     ripgrep
     fd
     jq
