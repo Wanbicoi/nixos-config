@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  inputs,
+  pkgs,
+  ...
+}:
 
 let
   # The nvim-config git submodule checked out inside this repo. Linked
@@ -6,6 +11,23 @@ let
   nvimConfig = "${config.home.homeDirectory}/nixconfig/nvim";
 in
 {
+  imports = [ inputs.sops-nix.homeManagerModules.sops ];
+
+  # Age-encrypted secrets (see .sops.yaml + secrets/). The private key lives
+  # outside the repo at ~/.config/sops/age/keys.txt.
+  sops = {
+    age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
+    defaultSopsFile = ../../secrets/common.yaml;
+    secrets.example_secret = { };
+
+    templates."shell.env" = {
+      mode = "0400";
+      content = ''
+        export EXAMPLE_SECRET="${config.sops.placeholder.example_secret}"
+      '';
+    };
+  };
+
   home = {
     username = "nixos";
     homeDirectory = "/home/nixos";
@@ -28,6 +50,14 @@ in
         vi = "nvim";
         vim = "nvim";
       };
+
+      # Export sops secrets as env vars for every shell (and apps launched
+      # from it). The template is generated at activation.
+      envExtra = ''
+        [[ -r "${config.sops.templates."shell.env".path}" ]] && source "${
+          config.sops.templates."shell.env".path
+        }"
+      '';
     };
 
     starship = {
@@ -68,6 +98,8 @@ in
     rustc
     gcc
     gnumake
+    sops
+    age
     ripgrep
     fd
     jq

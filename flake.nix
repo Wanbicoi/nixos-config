@@ -32,6 +32,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Declarative secrets (age-encrypted, decrypted at activation).
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Uncomment when adding a Mac (nix-darwin):
     # nix-darwin = {
     #   url = "github:nix-darwin/nix-darwin";

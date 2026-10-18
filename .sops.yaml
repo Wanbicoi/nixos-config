@@ -1,0 +1,12 @@
+# sops configuration.
+#
+# Secrets live encrypted under secrets/ and are decrypted at activation by
+# sops-nix. The matching private key is NOT in this repo; it lives at
+# ~/.config/sops/age/keys.txt (back it up somewhere safe!).
+keys:
+  - &admin age1mggn2tdtxwe3vjc3vtq3g4a4xvlvx97swlpejsc6gaeqrjy5vses8mx63t
+
+creation_rules:
+  - path_regex: secrets/.*\.ya?ml$
+    age:
+      - *admin

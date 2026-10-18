@@ -11,7 +11,7 @@ NIXOS_REBUILD = sudo nixos-rebuild
 
 .PHONY: help switch build test boot dry update update-input upgrade \
         fmt fmt-check check hooks gc generations rollback \
-        nvim-init nvim-update clean
+        nvim-init nvim-update secrets-edit clean
 
 help: ## Show this help
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) \
@@ -75,6 +75,12 @@ nvim-init: ## Clone the nvim-config submodule
 nvim-update: ## Pull the latest nvim-config, stage the new pointer
 	git submodule update --remote $(NVIM_DIR)
 	git add $(NVIM_DIR)
+
+## --- secrets ---
+
+secrets-edit: ## Edit encrypted secrets: make secrets-edit FILE=secrets/common.yaml
+	@test -n "$(FILE)" || { echo "usage: make secrets-edit FILE=secrets/common.yaml"; exit 1; }
+	sops $(FILE)
 
 clean: ## Remove build result symlinks
 	rm -f result result-*
