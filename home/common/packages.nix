@@ -6,6 +6,9 @@
     neovim
     tree-sitter
 
+    # Nix LSP + formatter for the editor (nvim LSP / conform).
+    nixd
+
     lazygit
     python3
     pnpm
