@@ -1,8 +1,13 @@
-# Host: WSL (NixOS-WSL)
+# Host: WSL (NixOS-WSL) — one distro, one user per identity.
 #
-# A host file wires together the platform modules and user profiles for one
-# machine. Hardware-specific and per-machine values live here.
-
+# `nixos` is the personal profile and the WSL default user (uid 1000). Company
+# profiles live on the same distro as extra users — `troy` is Laidon; when you
+# join another company add one more block here. Enter a non-default user with
+# `wsl.exe -d <distro> -u <user>` from Windows or `su - <user>` inside.
+#
+# NixOS-WSL only auto-creates `wsl.defaultUser`; the others are declared here.
+# The default user must keep uid 1000: the /mnt/c drvfs mount maps Windows
+# files to uid 1000.
 { inputs, pkgs, ... }:
 
 {
@@ -17,14 +22,31 @@
 
   networking.hostName = "nixos-wsl";
 
-  wsl.defaultUser = "nixos";
-
-  # Make zsh the login shell (configured via Home Manager).
-  users.users.nixos.shell = pkgs.zsh;
-
   system.stateVersion = "26.05";
 
-  # Home Manager: the shared user environment every NixOS host reuses.
+  wsl.defaultUser = "nixos";
+
+  # Shared write access to /srv/nixconfig (path set in home/common/wsl.nix).
+  users.groups.nixconfig = { };
+
+  # `wsl.defaultUser` already makes nixos a normal user with uid 1000 and the
+  # wheel group; only the shell and extra group are needed here.
+  users.users.nixos = {
+    shell = pkgs.zsh;
+    extraGroups = [ "nixconfig" ];
+  };
+
+  users.users.troy = {
+    isNormalUser = true;
+    uid = 1001;
+    extraGroups = [
+      "wheel"
+      "nixconfig"
+    ];
+    shell = pkgs.zsh;
+  };
+
+  # One Home Manager profile per user; both share modules/nixos and home/common.
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
@@ -32,5 +54,6 @@
     backupFileExtension = "hm-backup";
 
     users.nixos.imports = [ ../../home/nixos ];
+    users.troy.imports = [ ../../home/troy ];
   };
 }

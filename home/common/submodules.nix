@@ -6,36 +6,50 @@
 # parent directory.
 {
   config,
+  lib,
   ...
 }:
 
 let
-  repoRoot = "${config.home.homeDirectory}/nixconfig";
-  nvimConfig = "${repoRoot}/submodules/nvim";
-  agentConfig = "${repoRoot}/submodules/agent-config";
+  cfg = config.submodules;
+
+  nvimConfig = "${cfg.repoRoot}/submodules/nvim";
+  agentConfig = "${cfg.repoRoot}/submodules/agent-config";
   link = path: config.lib.file.mkOutOfStoreSymlink path;
 in
 {
-  # Neovim: the Lua config from the nvim submodule as ~/.config/nvim.
-  xdg.configFile."nvim".source = link nvimConfig;
+  options.submodules.repoRoot = lib.mkOption {
+    type = lib.types.str;
+    default = "${config.home.homeDirectory}/nixconfig";
+    description = ''
+      Path to the nixconfig checkout whose submodules are linked into $HOME.
+      Override in home/<user>/identity.nix when several users share one
+      checkout instead of keeping a copy in each home.
+    '';
+  };
 
-  # --- Shared agent config (agent-config submodule) ---------------------------
+  config = {
+    # Neovim: the Lua config from the nvim submodule as ~/.config/nvim.
+    xdg.configFile."nvim".source = link nvimConfig;
 
-  # Pi: the whole agent dir (auth/sessions/npm are gitignored in the repo).
-  home.file.".pi/agent".source = link "${agentConfig}/pi";
+    # --- Shared agent config (agent-config submodule) -------------------------
 
-  # OpenCode: the whole global config dir.
-  xdg.configFile."opencode".source = link "${agentConfig}/opencode";
+    # Pi: the whole agent dir (auth/sessions/npm are gitignored in the repo).
+    home.file.".pi/agent".source = link "${agentConfig}/pi";
 
-  # Claude Code: only the user-authored subset. ~/.claude/settings.json is left
-  # untouched because Orca rewrites it per machine (see
-  # agent-config/claude/README.md). CLAUDE.md points at the canonical shared
-  # AGENTS.md directly, avoiding a second hop through the in-repo symlink.
-  home.file.".claude/CLAUDE.md".source = link "${agentConfig}/AGENTS.md";
-  home.file.".claude/agents".source = link "${agentConfig}/claude/agents";
-  home.file.".claude/commands".source = link "${agentConfig}/claude/commands";
-  # Skills: one canonical directory in the repo, shared by every agent.
-  # Pi and OpenCode read ~/.agents/skills; Claude Code reads ~/.claude/skills.
-  home.file.".agents/skills".source = link "${agentConfig}/skills";
-  home.file.".claude/skills".source = link "${agentConfig}/skills";
+    # OpenCode: the whole global config dir.
+    xdg.configFile."opencode".source = link "${agentConfig}/opencode";
+
+    # Claude Code: only the user-authored subset. ~/.claude/settings.json is left
+    # untouched because Orca rewrites it per machine (see
+    # agent-config/claude/README.md). CLAUDE.md points at the canonical shared
+    # AGENTS.md directly, avoiding a second hop through the in-repo symlink.
+    home.file.".claude/CLAUDE.md".source = link "${agentConfig}/AGENTS.md";
+    home.file.".claude/agents".source = link "${agentConfig}/claude/agents";
+    home.file.".claude/commands".source = link "${agentConfig}/claude/commands";
+    # Skills: one canonical directory in the repo, shared by every agent.
+    # Pi and OpenCode read ~/.agents/skills; Claude Code reads ~/.claude/skills.
+    home.file.".agents/skills".source = link "${agentConfig}/skills";
+    home.file.".claude/skills".source = link "${agentConfig}/skills";
+  };
 }

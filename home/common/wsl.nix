@@ -19,4 +19,14 @@
 
   # xdg-open consults $BROWSER for URLs; point it at the Windows opener.
   home.sessionVariables.BROWSER = "wsl-open";
+
+  # Every WSL user shares one nixconfig checkout outside the homes. The group
+  # (nixconfig) and permissions are set in hosts/<host>; see the one-time
+  # setup in the README.
+  submodules.repoRoot = "/srv/nixconfig";
+
+  # The shared checkout is owned by another user, so git (and the flake
+  # evaluation during nixos-rebuild) would otherwise reject it as
+  # "dubious ownership".
+  programs.git.settings.safe.directory = [ "/srv/nixconfig" ];
 }
