@@ -5,19 +5,35 @@
   home.packages = with pkgs; [
     neovim
     tree-sitter
+
     lazygit
     python3
     pnpm
     nodejs
     cargo
     rustc
+
     gcc
     gnumake
     sops
     age
+
+    # utils
     ripgrep
     fd
     jq
     gh
+
+    # Browser for Playwright.
+    chromium
+
+    # playwright-cli on PATH, run through npx (no local packaging yet).
+    (writeShellApplication {
+      name = "playwright-cli";
+      runtimeInputs = [ nodejs ];
+      text = ''
+        exec npx --yes @playwright/cli@latest "$@"
+      '';
+    })
   ];
 }
