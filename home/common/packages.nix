@@ -26,6 +26,7 @@
     fd
     jq
     gh
+    unzip
 
     # Browser for Playwright.
     chromium

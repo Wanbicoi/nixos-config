@@ -37,6 +37,13 @@
   # shell configuration lives in Home Manager (home/<user>/).
   programs.zsh.enable = true;
 
+  # Run unpatched prebuilt binaries (e.g. tools installed by Mason/npm/pip)
+  # that hardcode the generic /lib64/ld-linux-x86-64.so.2 loader. NixOS points
+  # that path at a stub that refuses to run; this replaces it with nix-ld, which
+  # forwards to the Nix glibc loader plus the default library set. Necessary for
+  # Mason's lua-language-server and similar prebuilt LSPs.
+  programs.nix-ld.enable = true;
+
   # Minimal toolset available on all NixOS machines. User-level tools belong in
   # home/<user>/ instead.
   environment.systemPackages = with pkgs; [
