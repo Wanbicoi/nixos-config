@@ -6,10 +6,25 @@
 { pkgs, ... }:
 
 {
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
+  nix.settings = {
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+
+    # Trust flake `nixConfig` (e.g. the Numtide cache in flake.nix) without
+    # passing --accept-flake-config on every rebuild.
+    accept-flake-config = true;
+
+    # Let wheel users use extra substituters/build options from the CLI.
+    trusted-users = [
+      "root"
+      "@wheel"
+    ];
+
+    # Deduplicate identical store paths: slower downloads, faster builds/links.
+    auto-optimise-store = true;
+  };
 
   # Free up space automatically.
   nix.gc = {
