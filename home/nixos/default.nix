@@ -52,6 +52,7 @@ in
     pnpm
     cargo
     rustc
+    gcc
     ripgrep
     fd
     jq
