@@ -54,6 +54,7 @@ in
     cargo
     rustc
     gcc
+    gnumake
     ripgrep
     fd
     jq

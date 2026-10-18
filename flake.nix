@@ -26,6 +26,12 @@
     # lets us pull pre-built binaries from the Numtide cache.
     llm-agents.url = "github:numtide/llm-agents.nix";
 
+    # Declarative git pre-commit hooks.
+    pre-commit-hooks = {
+      url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Uncomment when adding a Mac (nix-darwin):
     # nix-darwin = {
     #   url = "github:nix-darwin/nix-darwin";
@@ -37,6 +43,8 @@
     inputs@{ nixpkgs, ... }:
     let
       lib = nixpkgs.lib;
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
 
       # Build a NixOS host from hosts/<hostname>. The host directory decides
       # which platform (WSL, laptop, ...) and user modules it pulls in.
@@ -47,13 +55,35 @@
           specialArgs = { inherit inputs; };
           modules = [ ./hosts/${hostname} ];
         };
+
+      # Pre-commit hooks: run by `nix flake check`, installed by `nix develop`.
+      pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run {
+        src = ./.;
+        hooks = {
+          nixfmt.enable = true;
+
+          # Add more from https://github.com/cachix/git-hooks.nix, e.g.:
+          # statix.enable = true;
+          # deadnix.enable = true;
+        };
+      };
     in
     {
       nixosConfigurations = {
-        wsl = mkNixos "wsl" "x86_64-linux";
+        wsl = mkNixos "wsl" system;
 
         # Add more NixOS machines here, e.g.:
-        # thinkbook = mkNixos "thinkbook" "x86_64-linux";
+        # thinkbook = mkNixos "thinkbook" system;
+      };
+
+      # `nix fmt` / `make fmt`.
+      formatter.${system} = pkgs.nixfmt-tree;
+
+      checks.${system}.pre-commit-check = pre-commit-check;
+
+      devShells.${system}.default = pkgs.mkShell {
+        inherit (pre-commit-check) shellHook;
+        buildInputs = pre-commit-check.enabledPackages;
       };
 
       # Uncomment and extend when adding nix-darwin machines:
