@@ -31,13 +31,22 @@
       # Keep a blank line between command output and the prompt.
       add_newline = true;
 
-      # First prompt line, then a full-width fill, then the input character.
-      # Add modules here if you want more (e.g. $nodejs, $cmd_duration).
-      format = "$directory$git_branch$git_status$fill$line_break$character";
+      # First prompt line: context, then a fill that pushes the last
+      # command's duration to the end of the line, then the input character.
+      format = "$directory$git_branch$git_status$fill$cmd_duration$line_break$character";
 
+      # Dashes instead of a solid rule, so the fill reads as spaced out.
       fill = {
-        symbol = "─";
+        symbol = "-";
         style = "dimmed";
+      };
+
+      # Last command's execution time, right-aligned at the end of line one.
+      cmd_duration = {
+        min_time = 0;
+        show_milliseconds = true;
+        style = "dimmed yellow";
+        format = " [$duration]($style)";
       };
     };
   };
