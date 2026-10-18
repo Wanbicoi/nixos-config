@@ -50,6 +50,8 @@ in
     lazygit
     python3
     pnpm
+    cargo
+    rustc
     ripgrep
     fd
     jq
