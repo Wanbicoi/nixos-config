@@ -28,11 +28,23 @@ in
         vi = "nvim";
         vim = "nvim";
       };
+
+      # Print a full-width rule before each prompt so command output is
+      # visually separated from the next prompt.
+      initExtra = ''
+        _nixconfig_rule() {
+          repeat ''${COLUMNS:-80} printf '─'
+          printf '\n'
+        }
+        autoload -Uz add-zsh-hook
+        add-zsh-hook precmd _nixconfig_rule
+      '';
     };
 
     starship = {
       enable = true;
       enableZshIntegration = true;
+      settings.add_newline = false;
     };
 
     git = {
