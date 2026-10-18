@@ -28,10 +28,10 @@
     gh
     unzip
 
-    # Browser for Playwright.
-    chromium
-
     # playwright-cli on PATH, run through npx (no local packaging yet).
+    # Browser binaries are downloaded by the CLI itself (`playwright-cli
+    # install-browser chromium`); nix-ld supplies their runtime libraries, so
+    # no Chromium package is needed here.
     (writeShellApplication {
       name = "playwright-cli";
       runtimeInputs = [ nodejs ];

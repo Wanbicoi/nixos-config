@@ -44,6 +44,37 @@
   # Mason's lua-language-server and similar prebuilt LSPs.
   programs.nix-ld.enable = true;
 
+  # Browsers downloaded by Playwright (`playwright-cli install-browser`) are
+  # generic Ubuntu builds and need the usual desktop stack, which nix-ld does
+  # not provide by default. Without these the bundled Chromium dies with
+  # "libglib-2.0.so.0: cannot open shared object file". Listing them here keeps
+  # Chromium out of the Nix config: Playwright owns the browser version.
+  programs.nix-ld.libraries = with pkgs; [
+    alsa-lib
+    atk
+    at-spi2-atk
+    at-spi2-core
+    cairo
+    dbus
+    expat
+    glib
+    libdrm
+    libgbm
+    libX11
+    libxcb
+    libXcomposite
+    libXdamage
+    libXext
+    libXfixes
+    libxkbcommon
+    libXrandr
+    libxshmfence
+    mesa
+    nspr
+    nss
+    pango
+  ];
+
   # Minimal toolset available on all NixOS machines. User-level tools belong in
   # home/<user>/ instead.
   environment.systemPackages = with pkgs; [
