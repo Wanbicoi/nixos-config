@@ -1,6 +1,13 @@
 {
   description = "Nix configuration for laptops, NixOS-WSL, and macOS";
 
+  nixConfig = {
+    extra-substituters = [ "https://cache.numtide.com" ];
+    extra-trusted-public-keys = [
+      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+    ];
+  };
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
@@ -13,6 +20,11 @@
       url = "github:nix-community/NixOS-WSL/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # NOTE: intentionally no `nixpkgs.follows` — llm-agents.nix is tested
+    # against its own pinned nixpkgs-unstable. Leaving it independent also
+    # lets us pull pre-built binaries from the Numtide cache.
+    llm-agents.url = "github:numtide/llm-agents.nix";
 
     # Uncomment when adding a Mac (nix-darwin):
     # nix-darwin = {

@@ -12,6 +12,7 @@
 
     ../../modules/nixos/common.nix
     ../../modules/nixos/wsl.nix
+    ../../modules/nixos/llm-agents.nix
   ];
 
   networking.hostName = "nixos-wsl";
