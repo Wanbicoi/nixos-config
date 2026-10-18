@@ -46,6 +46,7 @@ in
 
   home.packages = with pkgs; [
     neovim
+    tree-sitter
     lazygit
     python3
     pnpm
