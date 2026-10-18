@@ -8,4 +8,9 @@
     username = "nixos";
     homeDirectory = "/home/nixos";
   };
+
+  programs.git.settings.user = {
+    name = "Trung Hoang";
+    email = "wanbicoi123@gmail.com";
+  };
 }

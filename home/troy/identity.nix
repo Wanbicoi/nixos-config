@@ -8,4 +8,9 @@
     username = "troy";
     homeDirectory = "/home/troy";
   };
+
+  programs.git.settings.user = {
+    name = "Troy Hoang";
+    email = "troy.hoang@laidon.com";
+  };
 }
