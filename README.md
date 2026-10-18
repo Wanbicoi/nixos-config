@@ -21,6 +21,60 @@ Declarative configuration for my machines — NixOS laptops, NixOS-WSL, and
 | --- | --- | --- |
 | `wsl` | NixOS-WSL | one distro; default user `nixos` (personal) plus company profiles (currently `troy`) |
 
+## Fresh setup
+
+Bootstrap for a new machine, from a stock install to this config taking over.
+NixOS-WSL is shown; a laptop also needs its own host first (see "Adding a
+machine").
+
+1. **Enable flakes.** A fresh install is still managed by
+   `/etc/nixos/configuration.nix`, and `sudo nixos-rebuild --flake` needs
+   flakes enabled for root. Add the feature and activate once:
+
+   ```nix
+   # /etc/nixos/configuration.nix
+   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+   ```
+
+   ```bash
+   sudo nixos-rebuild switch
+   ```
+
+2. **Clone the checkout with its submodules** (use the SSH URL and
+   `--recurse-submodules` if you also push from this machine):
+
+   ```bash
+   git clone --recurse-submodules https://github.com/Wanbicoi/nixos-config ~/nixconfig
+   cd ~/nixconfig
+   ```
+
+3. **Restore the sops age key** to `~/.config/sops/age/keys.txt` (mode `0400`)
+   *before* the first activation: sops-nix decrypts during the rebuild, and any
+   home without a key fails its Home Manager unit. To restore from backup, or
+   to generate a key and rekey, see [`secrets/README.md`](secrets/README.md).
+
+4. **Activate:**
+
+   ```bash
+   make switch          # sudo nixos-rebuild switch --flake .#wsl
+   ```
+
+   The first rebuild runs as an untrusted user, so it ignores the flake's
+   `nixConfig` (extra substituter, `accept-flake-config`, `trusted-users`) and
+   may build more from source than later ones. Those settings apply from the
+   next switch onwards.
+
+5. **Move the checkout to its shared location** (NixOS-WSL) following
+   [Shared checkout](#shared-checkout) — the `chgrp`/`chmod` step is what lets
+   every user read the flake and write the submodules. A laptop can keep the
+   checkout in `~` and skip this.
+
+6. **Verify:**
+
+   ```bash
+   systemctl status home-manager-nixos     # "active (exited)"
+   ```
+
 ## Usage
 
 ```bash
