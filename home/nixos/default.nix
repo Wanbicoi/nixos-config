@@ -28,23 +28,24 @@ in
         vi = "nvim";
         vim = "nvim";
       };
-
-      # Print a full-width rule before each prompt so command output is
-      # visually separated from the next prompt.
-      initExtra = ''
-        _nixconfig_rule() {
-          repeat ''${COLUMNS:-80} printf '─'
-          printf '\n'
-        }
-        autoload -Uz add-zsh-hook
-        add-zsh-hook precmd _nixconfig_rule
-      '';
     };
 
     starship = {
       enable = true;
       enableZshIntegration = true;
-      settings.add_newline = false;
+      settings = {
+        # Keep a blank line between command output and the prompt.
+        add_newline = true;
+
+        # First prompt line, then a full-width fill, then the input character.
+        # Add modules here if you want more (e.g. $nodejs, $cmd_duration).
+        format = "$directory$git_branch$git_status$fill$line_break$character";
+
+        fill = {
+          symbol = "─";
+          style = "dimmed";
+        };
+      };
     };
 
     git = {
