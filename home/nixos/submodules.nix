@@ -29,9 +29,13 @@ in
 
   # Claude Code: only the user-authored subset. ~/.claude/settings.json is left
   # untouched because Orca rewrites it per machine (see
-  # agent-config/claude/README.md).
-  home.file.".claude/CLAUDE.md".source = link "${agentConfig}/claude/CLAUDE.md";
+  # agent-config/claude/README.md). CLAUDE.md points at the canonical shared
+  # AGENTS.md directly, avoiding a second hop through the in-repo symlink.
+  home.file.".claude/CLAUDE.md".source = link "${agentConfig}/AGENTS.md";
   home.file.".claude/agents".source = link "${agentConfig}/claude/agents";
   home.file.".claude/commands".source = link "${agentConfig}/claude/commands";
-  home.file.".claude/skills".source = link "${agentConfig}/claude/skills";
+  # Skills: one canonical directory in the repo, shared by every agent.
+  # Pi and OpenCode read ~/.agents/skills; Claude Code reads ~/.claude/skills.
+  home.file.".agents/skills".source = link "${agentConfig}/skills";
+  home.file.".claude/skills".source = link "${agentConfig}/skills";
 }
