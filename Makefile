@@ -4,10 +4,11 @@
 HOST ?= wsl
 FLAKE ?= .
 NVIM_DIR ?= nvim
+FILE ?= secrets/common.yaml
 
 NIXOS_REBUILD = sudo nixos-rebuild
 
-.DEFAULT_GOAL := help
+.DEFAULT_GOAL := secrets-edit
 
 .PHONY: help switch build test boot dry update update-input upgrade \
         fmt fmt-check check hooks gc generations rollback \
@@ -78,8 +79,7 @@ nvim-update: ## Pull the latest nvim-config, stage the new pointer
 
 ## --- secrets ---
 
-secrets-edit: ## Edit encrypted secrets: make secrets-edit FILE=secrets/common.yaml
-	@test -n "$(FILE)" || { echo "usage: make secrets-edit FILE=secrets/common.yaml"; exit 1; }
+secrets-edit: ## Edit encrypted secrets (FILE=secrets/common.yaml)
 	sops $(FILE)
 
 clean: ## Remove build result symlinks
