@@ -11,20 +11,23 @@ Declarative configuration for my machines — NixOS laptops, NixOS-WSL, and
 | `hosts/<name>/` | One directory per machine: hostname, platform modules, users. |
 | `modules/nixos/` | NixOS system modules shared by all machines. |
 | `modules/darwin/` | nix-darwin modules (placeholder). |
-| `home/` | Home Manager user config, shared across platforms. |
+| `home/common/` | Home Manager modules shared by every user profile. |
+| `home/<user>/` | Per-user identity and user-specific packages. |
 | `secrets/` | Age-encrypted secrets, decrypted at activation by sops-nix. See [`secrets/README.md`](secrets/README.md). |
 
 ## Machines
 
 | Attribute | Platform | Notes |
 | --- | --- | --- |
-| `wsl` | NixOS-WSL | current |
+| `wsl` | NixOS-WSL | personal, user `nixos` |
+| `wsl-laidon` | NixOS-WSL | Laidon, user `troy` |
 
 ## Usage
 
 ```bash
-# apply a host
+# apply a host (defaults to HOST=wsl)
 sudo nixos-rebuild switch --flake .#wsl
+sudo nixos-rebuild switch --flake .#wsl-laidon
 
 # update all inputs, then re-apply
 nix flake update
