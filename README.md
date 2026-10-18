@@ -12,6 +12,7 @@ Declarative configuration for my machines — NixOS laptops, NixOS-WSL, and
 | `modules/nixos/` | NixOS system modules shared by all machines. |
 | `modules/darwin/` | nix-darwin modules (placeholder). |
 | `home/` | Home Manager user config, shared across platforms. |
+| `secrets/` | Age-encrypted secrets, decrypted at activation by sops-nix. See [`secrets/README.md`](secrets/README.md). |
 
 ## Machines
 
@@ -29,6 +30,20 @@ sudo nixos-rebuild switch --flake .#wsl
 nix flake update
 sudo nixos-rebuild switch --flake .#wsl
 ```
+
+## Secrets
+
+Secrets are committed encrypted under `secrets/` and decrypted at activation
+with sops + age. The private key is **not** in the repo — it lives at
+`~/.config/sops/age/keys.txt` (back it up).
+
+```bash
+make secrets-edit        # edit encrypted secrets/env template
+make switch              # sops-nix decrypts during rebuild
+```
+
+See [`secrets/README.md`](secrets/README.md) for key setup, adding a secret,
+wiring it into Home Manager, and rekeying.
 
 ## Adding a machine
 
