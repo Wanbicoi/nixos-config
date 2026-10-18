@@ -1,7 +1,8 @@
 # Laidon-specific user packages for `troy`.
 #
 # Most tools come from nixpkgs. `hana-cli` (SAP HANA Developer CLI) is only
-# published on npm, so it is wrapped here instead of installed globally.
+# published on npm and ships without a package-lock.json, so `buildNpmPackage`
+# cannot be used reproducibly. Wrapping npx is the pragmatic option.
 { pkgs, ... }:
 
 let
@@ -10,20 +11,16 @@ let
   hana-cli = pkgs.writeShellScriptBin "hana-cli" ''
     exec ${pkgs.nodejs}/bin/npx --yes hana-cli@latest "$@"
   '';
-  hana = pkgs.writeShellScriptBin "hana" ''
-    exec ${pkgs.nodejs}/bin/npx --yes hana-cli@latest "$@"
-  '';
 in
 {
   home.packages = with pkgs; [
     # GitLab CLI
     glab
 
-    # Cloudflare tunnel (and management CLI)
-    cloudflared
+    # Cloud Foundry CLI (`cf`)
+    cloudfoundry-cli
 
     # SAP HANA Developer CLI (npm, wrapped above).
     hana-cli
-    hana
   ];
 }

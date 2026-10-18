@@ -12,4 +12,8 @@
     ./programs.nix
     ./packages.nix
   ];
+
+  # Identical for every profile, so it is not part of identity.nix.
+  home.stateVersion = "26.05";
+  home.sessionVariables.EDITOR = "nvim";
 }

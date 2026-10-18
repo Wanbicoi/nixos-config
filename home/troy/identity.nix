@@ -7,7 +7,5 @@
   home = {
     username = "troy";
     homeDirectory = "/home/troy";
-    stateVersion = "26.05";
-    sessionVariables.EDITOR = "nvim";
   };
 }
