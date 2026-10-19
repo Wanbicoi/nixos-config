@@ -5,12 +5,10 @@
 {
   wsl.enable = true;
 
-  # Re-register the binfmt_misc handler for Windows executables. WSL's own
-  # /init sets it up at boot, but NixOS's systemd remounts binfmt_misc and the
-  # registration is lost, so every .exe (wsl.exe, powershell.exe, ...) fails
-  # with "Exec format error". nixos-wsl defaults this to false on the
-  # assumption the registration survives; it does not here.
-  wsl.interop.register = true;
+  # No wsl.interop.register override: WSL registers the WSLInterop binfmt
+  # handler itself and systemd no longer remounts binfmt_misc out from under
+  # it, so .exe execution (wsl.exe, powershell.exe, wsl-open) works as-is.
+  # The override was only needed on WSL 2.x (see commit aae7e62).
 
   # Default user is per-host (hosts/<name>/default.nix).
 }
