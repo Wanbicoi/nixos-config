@@ -50,11 +50,16 @@
   # so root needs the system-wide equivalent (this writes /etc/gitconfig).
   # Without it, `make switch` dies with "repository path '/srv/nixconfig' is
   # not owned by current user".
+  #
+  # safe.directory is not recursive, so each root needs its bare path plus the
+  # `/*` glob for repos nested below it. See home/common/wsl.nix.
   programs.git = {
     enable = true;
     config.safe.directory = [
       "/srv/nixconfig"
+      "/srv/nixconfig/*"
       "/srv/shared"
+      "/srv/shared/*"
     ];
   };
 

@@ -25,13 +25,9 @@
   # setup in the README.
   submodules.repoRoot = "/srv/nixconfig";
 
-  # The shared checkout is owned by another user, so git (and the flake
-  # evaluation during nixos-rebuild) would otherwise reject it as
-  # "dubious ownership". /srv/shared is the cross-identity workspace (declared
-  # in hosts/wsl/default.nix) and gets the same treatment, since repos cloned
-  # there by one user will be touched by the other.
-  programs.git.settings.safe.directory = [
-    "/srv/nixconfig"
-    "/srv/shared"
-  ];
+  # The shared checkout is owned by another user, so git would otherwise reject
+  # it as "dubious ownership". That is handled once, in the system-wide git
+  # config — see the `safe.directory` comment in hosts/wsl/default.nix. Do not
+  # re-add it here: git reads system -> global -> local and safe.directory is
+  # multi-valued, so a second copy would only be able to drift out of sync.
 }
