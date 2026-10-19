@@ -20,14 +20,14 @@
   # xdg-open consults $BROWSER for URLs; point it at the Windows opener.
   home.sessionVariables.BROWSER = "wsl-open";
 
-  # Every WSL user shares one nixconfig checkout outside the homes. The group
-  # (nixconfig) and permissions are set in hosts/<host>; see the one-time
-  # setup in the README.
+  # Both WSL hosts keep one nixconfig checkout outside the homes. Permissions
+  # differ per host (single-user vs. group-readable) and are set in
+  # hosts/<host>; see the one-time setup in the README.
   submodules.repoRoot = "/srv/nixconfig";
 
-  # The shared checkout is owned by another user, so git would otherwise reject
+  # The checkout may be owned by another user, so git would otherwise reject
   # it as "dubious ownership". That is handled once, in the system-wide git
-  # config — see the `safe.directory` comment in hosts/wsl/default.nix. Do not
-  # re-add it here: git reads system -> global -> local and safe.directory is
-  # multi-valued, so a second copy would only be able to drift out of sync.
+  # config — see the `safe.directory` comment in hosts/<host>/default.nix. Do
+  # not re-add it here: git reads system -> global -> local and safe.directory
+  # is multi-valued, so a second copy would only drift out of sync.
 }

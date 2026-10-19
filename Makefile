@@ -8,11 +8,16 @@ AGENT_DIR ?= submodules/agent-config
 AGENT_REMOTE ?= git@github.com:CHANGE_ME/agent-config.git
 FILE ?= secrets/personal.yaml
 
+# Distro that switch-laidon must run in (WSL exports WSL_DISTRO_NAME).
+# Override if it was imported under another name:
+#   make switch-laidon LAIDON_DISTRO=NixOS-Laidon
+LAIDON_DISTRO ?= wsl-laidon
+
 NIXOS_REBUILD = sudo nixos-rebuild
 
 .DEFAULT_GOAL := secrets-edit
 
-.PHONY: help switch build test boot dry rollback generations \
+.PHONY: help switch switch-laidon build test boot dry rollback generations \
         update update-input upgrade check hooks \
         nvim-init nvim-update secrets-edit \
         agent-init agent-update agent-remote
@@ -26,6 +31,15 @@ help: ## Show this help
 
 switch: ## Build + activate HOST (default: wsl)
 	$(NIXOS_REBUILD) switch --flake $(FLAKE)#$(HOST)
+
+switch-laidon: ## Build + activate wsl-laidon (inside that distro)
+	@if [ "$${WSL_DISTRO_NAME:-}" != "$(LAIDON_DISTRO)" ] && [ "$$(hostname)" != "wsl-laidon" ]; then \
+		echo "refusing: this is '$${WSL_DISTRO_NAME:-<not WSL>}', not '$(LAIDON_DISTRO)'"; \
+		echo "switch-laidon swaps the nixos/troy uids; run it in the company distro."; \
+		echo "override with: make switch-laidon LAIDON_DISTRO=<distro-name>"; \
+		exit 1; \
+	fi
+	$(NIXOS_REBUILD) switch --flake $(FLAKE)#wsl-laidon
 
 build: ## Build HOST without activating
 	$(NIXOS_REBUILD) build --flake $(FLAKE)#$(HOST)

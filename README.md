@@ -19,7 +19,8 @@ Declarative configuration for my machines — NixOS laptops, NixOS-WSL, and
 
 | Attribute | Platform | Notes |
 | --- | --- | --- |
-| `wsl` | NixOS-WSL | one distro; default user `nixos` (personal) plus company profiles (currently `troy`) |
+| `wsl` | NixOS-WSL | personal distro; `nixos` is the only account (default user and admin) |
+| `wsl-laidon` | NixOS-WSL | company-first distro; default user `troy` (no sudo), admin `nixos` via `wsl.exe -u nixos` |
 
 ## Fresh setup
 
@@ -65,9 +66,10 @@ machine").
    next switch onwards.
 
 5. **Move the checkout to its shared location** (NixOS-WSL) following
-   [Shared checkout](#shared-checkout) — the `chgrp`/`chmod` step is what lets
-   every user read the flake and write the submodules. A laptop can keep the
-   checkout in `~` and skip this.
+   [Shared checkout](#shared-checkout). On `wsl-laidon` the `chgrp`/`chmod`
+   step is what lets the company user read the flake; on personal `wsl` the
+   checkout stays owner-only. A laptop can keep the checkout in `~` and skip
+   this.
 
 6. **Verify:**
 
@@ -79,23 +81,41 @@ machine").
 
 ```bash
 # apply the host (run from the checkout, e.g. /srv/nixconfig)
+make switch            # personal wsl
+make switch-laidon     # wsl-laidon, from inside that distro only
+# equivalently:
 sudo nixos-rebuild switch --flake .#wsl
 
 # update all inputs, then re-apply
 nix flake update
-sudo nixos-rebuild switch --flake .#wsl
+make switch
 ```
+
+`switch-laidon` refuses to run unless the distro is named `wsl-laidon` (or is
+already running that host, i.e. `hostname` is `wsl-laidon`): the host swaps the
+`nixos`/`troy` uids, which is only safe in the company distro. Override the
+expected name with `make switch-laidon LAIDON_DISTRO=<distro>`.
 
 ## Users
 
-`nixos` is the personal profile and the WSL default user (uid 1000). Company
-profiles are extra users on the same distro: `troy` is Laidon, and a new
-company means a new `home/<user>/` profile plus one `users.users.<user>` block
-in `hosts/wsl/default.nix`.
+Two WSL hosts exist, with opposite defaults:
+
+- `wsl` — personal distro. `nixos` is the only account: uid 1000, default user
+  and admin.
+- `wsl-laidon` — Laidon distro. `troy` is the default user (uid 1000, no sudo,
+  so Explorer/VS Code/`wsl.exe` all open as the company persona) and `nixos`
+  is the admin (uid 1001), entered with `wsl.exe -u nixos`. Both users have
+  Home Manager profiles and `linger` enabled, because HM activates before the
+  first login session; `troy`'s home stays 0700 because Explorer already runs
+  as troy.
+
+Company accounts belong on `wsl-laidon`, never on the personal `wsl` distro.
+There, the default user is already the company persona; add another company by
+following "Adding a company user" below.
 
 Enter a non-default user with `wsl.exe -d <distro> -u <user>` from Windows or
 `sudo -iu <user>` inside. `su - <user>` cannot work: `su` asks for the target
-user's password, and no profile declares one (both accounts are locked `!` in
+user's password, and no profile declares one (the accounts are locked `!` in
 `/etc/shadow`).
 
 ### Adding a company user
@@ -103,8 +123,9 @@ user's password, and no profile declares one (both accounts are locked `!` in
 1. Copy the profile: `cp -r home/troy home/<company>`, then edit
    `home/<company>/identity.nix` (`username`, `homeDirectory`) and
    `home/<company>/packages.nix` (the company's CLI/tooling).
-2. Register the user and its Home Manager profile in `hosts/wsl/default.nix`
-   (next free uid — 1000 is `nixos`, 1001 is `troy`):
+2. Register the user and its Home Manager profile in
+   `hosts/wsl-laidon/default.nix` (uids there: 1000 is `troy`, 1001 is
+   `nixos`, so the next free one is 1002):
 
    ```nix
    users.users.<company> = {
@@ -128,7 +149,7 @@ user's password, and no profile declares one (both accounts are locked `!` in
    nixos's:
 
    ```bash
-   sudo nixos-rebuild switch --flake /srv/nixconfig#wsl
+   sudo nixos-rebuild switch --flake /srv/nixconfig#wsl-laidon
    sudo -u <company> mkdir -p /home/<company>/.config/sops/age
    sudo -u <company> age-keygen -o /home/<company>/.config/sops/age/keys.txt
    # add its `age1...` public key as a new recipient in .sops.yaml, then rekey:
@@ -143,13 +164,19 @@ user's password, and no profile declares one (both accounts are locked `!` in
 
 ## Shared checkout
 
-nixos **owns** the single nixconfig checkout at `/srv/nixconfig` (set via
-`submodules.repoRoot` in `home/common/wsl.nix`). Company users are in the
+Both hosts keep the nixconfig checkout at `/srv/nixconfig` (set via
+`submodules.repoRoot` in `home/common/wsl.nix`). On the personal `wsl` distro
+only `nixos` exists, so the tree is `0700 nixos` — no other account can read
+it (`tmpfiles` `z` rule in `hosts/wsl/default.nix`).
+
+On `wsl-laidon`, nixos still **owns** it, but company users are in the
 `nixconfig` group only so they can **read** it — never write it, because root
 re-uses the checkout when evaluating the flake and activating the system, so
-write access would be equivalent to root. The tree is `2750 nixos:nixconfig`
-(declared as a `tmpfiles` `z` rule in `hosts/wsl/default.nix`). One-time setup —
-note the order: the group only exists after the first rebuild.
+write access would be equivalent to root. That tree is `2750 nixos:nixconfig`
+(`hosts/wsl-laidon/default.nix`).
+
+One-time setup for `wsl-laidon` — note the order: the group only exists after
+the first rebuild.
 
 ```bash
 # 1. Move the checkout to the shared location.
@@ -158,7 +185,7 @@ sudo mv ~/nixconfig /srv/nixconfig
 # 2. Apply once: creates the nixconfig group + users and (via tmpfiles) sets
 #    the 2750 mode. A user without a sops age key will have its Home Manager
 #    unit fail here.
-sudo nixos-rebuild switch --flake /srv/nixconfig#wsl
+sudo nixos-rebuild switch --flake /srv/nixconfig#wsl-laidon
 
 # 3. Ensure the checkout is group-readable (idempotent).
 sudo chgrp -R nixconfig /srv/nixconfig
@@ -173,16 +200,19 @@ config that gets linked into each home read-only.
 
 ## Shared folder
 
-Homes are private: `/home/nixos` is 0700 and `/home/troy` is 0750 (browsable
-only, so Windows Explorer can list it). Anything both identities should read
-*and* write belongs in `/srv/shared` instead of a home directory, which
-avoids relaxing permissions on `~/.ssh`, sops age keys, or browser sessions.
+This exists only on `wsl-laidon`, where two identities coexist. Homes stay
+private: `/home/troy` is 0700 (Explorer runs as troy, so it needs no browse
+grant) and `/home/nixos` is 0700. Anything both identities should read *and*
+write belongs in `/srv/shared` instead of a home directory, which avoids
+relaxing permissions on `~/.ssh`, sops age keys, or browser sessions. The
+personal `wsl` distro has one user and no `/srv/shared`.
 
-`/srv/shared` is declared in `hosts/wsl/default.nix` as a `systemd.tmpfiles`
-rule: `d /srv/shared 2775 root shared -`. The setgid bit means files created
-below it inherit the `shared` group regardless of which user made them, and
-`umask 002` gives them group write. Apart from that nothing to set up — the
-directory appears on the next `make switch`:
+`/srv/shared` is declared in `hosts/wsl-laidon/default.nix` as `systemd.tmpfiles`
+rules: `d /srv/shared 2775 root shared -` plus default ACLs
+(`g:shared:rwx`, `d:g:shared:rwx`). The setgid bit makes new entries inherit
+the `shared` group, and the default ACL grants that group write regardless of
+the creator's umask — no `umask 002` needed anywhere. Apart from that nothing
+to set up — the directory appears on the next `make switch`:
 
 ```bash
 cd /srv/shared

@@ -1,7 +1,6 @@
 # Interactive shell: zsh itself and the starship prompt.
 {
   config,
-  lib,
   ...
 }:
 
@@ -15,10 +14,6 @@
       vi = "nvim";
       vim = "nvim";
     };
-
-    # The shared /srv/nixconfig checkout must stay group-writable so both users
-    # can edit it; the default 022 umask would strip group write on new files.
-    initContent = lib.mkAfter "umask 002";
 
     # Export sops secrets as env vars for every shell (and apps launched
     # from it). The template is generated at activation.
@@ -53,7 +48,7 @@
       # command's duration to the end of the line, then the input character.
       format = "$username$directory$git_branch$git_status$fill$cmd_duration$line_break$character";
 
-      # Always show who you are: several users share this distro, and a plain
+      # Always show who you are: wsl-laidon has several users, and a plain
       # prompt under `sudo -iu troy` would otherwise look identical to nixos'.
       username = {
         show_always = true;

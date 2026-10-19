@@ -20,10 +20,11 @@ Navigation only. `README.md` (layout, fresh setup), `hosts/README.md` and
 
 ## Flake outputs
 
-- `nixosConfigurations.wsl` — the only host. There is **no** `homeConfigurations`
+- `nixosConfigurations.wsl` (personal) and `nixosConfigurations.wsl-laidon`
+  (company-first) — the two WSL hosts. There is **no** `homeConfigurations`
   output and no `packages.*`; Home Manager is integrated through NixOS.
 - Per-user Home Manager config lives at
-  `nixosConfigurations.wsl.config.home-manager.users.<user>.home.*`
+  `nixosConfigurations.<host>.config.home-manager.users.<user>.home.*`
   (users: `nixos`, `troy`).
 
 ## Verify before activating
@@ -50,27 +51,32 @@ Option definitions beat recollection; read the module from the flake inputs:
 - Home Manager modules: `<home-manager path>/modules/programs/<name>.nix`
 - NixOS modules: `<nixpkgs path>/nixos/modules/...`
 
-## Host `wsl` specifics
+## WSL host specifics (`wsl`, `wsl-laidon`)
 
 - `/etc` is a symlink into the store and **read-only**: hand edits
   (`git config --system ...`, files dropped in `/etc`) never persist. Change the
   module and switch, or pass an env override for a one-off
   (`GIT_CONFIG_GLOBAL=...`).
 - `su - <user>` does not work here: `su` authenticates as the *target* user via
-  PAM, and neither `nixos` nor `troy` declares a password hash (both are `!` =
-  locked in `/etc/shadow`), so the prompt can never be satisfied. Use
-  `sudo -iu <user>` (run as nixos) or `wsl.exe -u <user>`. Only `nixos` is in
-  `wheel`/has sudo; company personas (`troy`) are non-admin, so `make switch`
-  is a nixos-only action.
-- `/srv/nixconfig` is a git checkout owned by `nixos`; `troy` is in the
+  PAM, and no profile declares a password hash (all accounts are `!` = locked in
+  `/etc/shadow`), so the prompt can never be satisfied. Use `sudo -iu <user>`
+  (run as nixos) or `wsl.exe -u <user>`. `nixos` is the only `wheel`/sudo user
+  on both hosts, so `make switch` is a nixos-only action. On `wsl-laidon`,
+  `troy` is the default but non-admin user (see the `mkForce` in that host).
+- `/srv/nixconfig` is a git checkout owned by `nixos`. Personal `wsl` is
+  single-user and keeps it `0700`. On `wsl-laidon` company users are in the
   `nixconfig` group but only to **read** it (mode `2750`), never write it,
   because root re-uses the checkout when evaluating the flake and activating —
-  write access to it would be root. Hence the `safe.directory` entries in
-  `hosts/wsl/default.nix`. Repos under `/srv/shared` have their own
+  write access to it would be root. Hence the `safe.directory` entries in both
+  hosts. Repos under `/srv/shared` (wsl-laidon only) have their own
   cross-identity ownership mix.
-- `troy` is never a login session of this distro (entered with `sudo -iu troy`
-  or `wsl.exe -u troy`), so anything that needs a systemd *user* manager must be
-  declared (`users.users.troy.linger`) — see `secrets/README.md` troubleshooting.
+- Both users have `users.users.<user>.linger = true` on `wsl-laidon`.
+  Home Manager's system unit runs before `systemd-user-sessions.service`, so
+  even the default user (troy) has no user manager yet at boot; without linger
+  HM skips the user units and sops secrets never render. nixos is additionally
+  never a login session (entered with `sudo -iu nixos` or `wsl.exe -u nixos`).
+  See `secrets/README.md` troubleshooting. On personal `wsl`, nixos is the
+  default user and gets a manager from its own session.
 - `exec zsh -l` in an already-open shell to pick up a switch; `programs.zsh.envExtra`
   lands in `~/.zshenv`, so secrets/aliases only reach zsh.
 - `jq`, `sops`, `age` are in `/etc/profiles/per-user/<user>/bin`; `statix` and

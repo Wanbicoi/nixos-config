@@ -1,15 +1,11 @@
-# Host: WSL (NixOS-WSL) — one distro, one user per identity.
+# Host: WSL (personal) — the personal distro, with `nixos` as the only account.
 #
-# `nixos` is the personal profile and the WSL default user (uid 1000). Company
-# profiles live on the same distro as extra users — `troy` is Laidon; when you
-# join another company add one more block here. Enter a non-default user with
-# `wsl.exe -d <distro> -u <user>` from Windows or `sudo -iu <user>` inside
-# (`su` cannot work: it authenticates as the target user, and no profile
-# declares a password hash).
+# Company personas live on hosts/wsl-laidon, a separate distro, so this host
+# needs none of the cross-identity groups, the shared workspace, or the company
+# unfree exceptions.
 #
-# NixOS-WSL only auto-creates `wsl.defaultUser`; the others are declared here.
-# The default user must keep uid 1000: the /mnt/c drvfs mount maps Windows
-# files to uid 1000.
+# `nixos` is the WSL default user (uid 1000); the /mnt/c drvfs mount maps
+# Windows files to uid 1000, so that stays fixed.
 { inputs, pkgs, ... }:
 
 {
@@ -26,116 +22,36 @@
 
   system.stateVersion = "26.05";
 
-  # `acli` (Atlassian CLI, in troy's Laidon profile) is licensed unfree, so
-  # nixpkgs refuses to evaluate it. A predicate keeps this a deliberate
-  # per-package exception instead of a blanket `allowUnfree = true`; the
-  # FHS wrapper (`acli`) and the binary it wraps (`acli-unwrapped`) each need
-  # an entry because the license check runs per derivation.
-  nixpkgs.config.allowUnfreePredicate =
-    pkg:
-    builtins.elem (pkgs.lib.getName pkg) [
-      "acli"
-      "acli-unwrapped"
-    ];
-
   wsl.defaultUser = "nixos";
 
-  # Shared read access to /srv/nixconfig (path set in home/common/wsl.nix).
-  # nixos owns and writes it; company users are in the group only to read it.
-  # The directory's mode is the git checkout's own 2775 -> tightened to 2750
-  # below so the group cannot write the flake that root rebuilds.
-  users.groups.nixconfig = { };
-
-  # Cross-identity workspace. Homes stay private (see homeMode below); anything
-  # both users should reach lives here instead. The group is deliberately
-  # separate from `nixconfig` so revoking workspace access does not also revoke
-  # the ability to edit this repo.
-  users.groups.shared = { };
-
-  # `d` = create if missing, mode 2775. The setgid bit makes new files and
-  # directories inherit the `shared` group, so group access does not depend on
-  # each user's default primary group. Needs umask 002 (set in
-  # home/common/shell.nix) to actually produce 0664/0775 files; otherwise a
-  # plain 022 umask still lets the owner write but caps group write.
-  #
-  # `/srv/nixconfig` is the admin-owned flake checkout; the `z` rule tightens
-  # it to 2750 so company users in the nixconfig group can read but never
-  # write what root later evaluates. (Read-only still leaks any plaintext in
-  # the flake and its /nix/store copies to the group — keep personal data out
-  # of the repo, in homes.)
+  # The checkout lives outside the home (submodules.repoRoot in
+  # home/common/wsl.nix) and root re-evaluates it on every rebuild. With no
+  # other account on this distro, only nixos may read or write it.
   systemd.tmpfiles.rules = [
-    "d /srv/shared 2775 root shared -"
-    "z /srv/nixconfig 2750 nixos nixconfig - -"
+    "z /srv/nixconfig 0700 nixos users - -"
   ];
 
   # `nixos-rebuild switch --flake .#wsl` evaluates the flake as root, and git
   # refuses any repo whose owner is not the current user. The per-user
-  # `safe.directory` in home/common/wsl.nix only covers the two login users,
-  # so root needs the system-wide equivalent (this writes /etc/gitconfig).
-  # Without it, `make switch` dies with "repository path '/srv/nixconfig' is
-  # not owned by current user".
-  #
-  # safe.directory is not recursive, so each root needs its bare path plus the
-  # `/*` glob for repos nested below it. See home/common/wsl.nix.
+  # `safe.directory` in home/common/wsl.nix only covers the login user, so root
+  # needs the system-wide equivalent (this writes /etc/gitconfig). Without it,
+  # `make switch` dies with "repository path '/srv/nixconfig' is not owned by
+  # current user". safe.directory is not recursive, hence the `/*` glob.
   programs.git = {
     enable = true;
     config.safe.directory = [
       "/srv/nixconfig"
       "/srv/nixconfig/*"
-      "/srv/shared"
-      "/srv/shared/*"
     ];
   };
 
   # `wsl.defaultUser` already makes nixos a normal user with uid 1000 and the
-  # wheel group; only the shell and extra group are needed here.
+  # wheel group; only the shell is needed here.
   users.users.nixos = {
     shell = pkgs.zsh;
-    extraGroups = [
-      "nixconfig"
-      "shared"
-    ];
   };
 
-  # troy (Laidon) is a plain company user: it has no wheel/root (so no
-  # sudo and no trusted-user), no write access to the flake, and only read
-  # access to /srv/nixconfig via the nixconfig group. `make switch`
-  # (sudo nixos-rebuild) is therefore a nixos-only action.
-  users.users.troy = {
-    isNormalUser = true;
-    uid = 1001;
-    extraGroups = [
-      "nixconfig"
-      "shared"
-    ];
-    shell = pkgs.zsh;
-
-    # Home Manager renders sops secrets from a *user* service
-    # (`systemctl --user restart sops-nix`), and its activation silently skips
-    # that step when no user manager is running:
-    #
-    #   User systemd daemon not running. Probably executed on boot where no
-    #   manual start/reload is needed.
-    #
-    # That assumption does not hold here. troy is never a login session of
-    # this distro -- it is entered with `sudo -iu troy` or `wsl.exe -u troy`
-    # from nixos -- so /run/user/1001 would never appear and ~/.config/sops-nix
-    # would never be created, leaving every sops env var empty in troy's
-    # shells. Linger starts user@1001 at boot, so the secrets are rendered
-    # without an interactive session. (nixos is the WSL default user and gets
-    # a manager from its own login session.)
-    linger = true;
-
-    # Windows Explorer reaches Linux files through \\wsl.localhost\<distro>,
-    # and that 9p share runs as the *default* user (nixos), not as troy. The
-    # default homeMode 0700 therefore made /home/troy show up as
-    # "... is not accessible. You might not have permission ...". Both users
-    # share the `users` group, so group r-x is enough to browse the home
-    # directory (dotfiles like .zsh_history stay 0600).
-    homeMode = "0750";
-  };
-
-  # One Home Manager profile per user; both share modules/nixos and home/common.
+  # One Home Manager profile; company profiles are imported by wsl-laidon.
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
@@ -143,6 +59,5 @@
     backupFileExtension = "hm-backup";
 
     users.nixos.imports = [ ../../home/nixos ];
-    users.troy.imports = [ ../../home/troy ];
   };
 }

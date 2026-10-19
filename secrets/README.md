@@ -111,7 +111,8 @@ and then **skips the render entirely** — `home-manager-<user>.service` still
 reports success, so the failure is silent. A user who is only ever entered with
 `sudo -iu <user>` or `wsl.exe -u <user>` (never a login session) has no user
 manager, and therefore no secrets. Declare `users.users.<user>.linger = true;`
-(see `../hosts/wsl/default.nix` for `troy`) so the manager starts at boot.
+(see `../hosts/wsl-laidon/default.nix`, where both `nixos` and `troy` do) so
+the manager starts at boot.
 
 Each user needs its own `~/.config/sops/age/keys.txt`; one user's key does not
 decrypt for another.

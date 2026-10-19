@@ -10,7 +10,7 @@
     cloudfoundry-cli
 
     # Atlassian CLI (`acli`). Unfree; the nixpkgs license gate is opened by a
-    # scoped predicate in hosts/wsl/default.nix.
+    # scoped predicate in hosts/wsl-laidon/default.nix.
     acli
 
     # SAP HANA Developer CLI (packaged locally for offline use).

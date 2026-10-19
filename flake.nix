@@ -77,6 +77,7 @@
     {
       nixosConfigurations = {
         wsl = mkNixos "wsl" system;
+        wsl-laidon = mkNixos "wsl-laidon" system;
 
         # Add more NixOS machines here, e.g.:
         # thinkbook = mkNixos "thinkbook" system;
