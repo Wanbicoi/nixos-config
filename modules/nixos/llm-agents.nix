@@ -22,5 +22,6 @@ in
     llm.claude-code
     llm.opencode2
     llm.pi
+    llm.antigravity-cli
   ];
 }
