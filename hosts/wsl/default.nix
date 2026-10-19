@@ -44,6 +44,14 @@
       "nixconfig"
     ];
     shell = pkgs.zsh;
+
+    # Windows Explorer reaches Linux files through \\wsl.localhost\<distro>,
+    # and that 9p share runs as the *default* user (nixos), not as troy. The
+    # default homeMode 0700 therefore made /home/troy show up as
+    # "... is not accessible. You might not have permission ...". Both users
+    # share the `users` group, so group r-x is enough to browse the home
+    # directory (dotfiles like .zsh_history stay 0600).
+    homeMode = "0750";
   };
 
   # One Home Manager profile per user; both share modules/nixos and home/common.
