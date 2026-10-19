@@ -55,6 +55,7 @@
     at-spi2-atk
     at-spi2-core
     cairo
+    cups
     dbus
     expat
     glib
