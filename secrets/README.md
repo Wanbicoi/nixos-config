@@ -102,7 +102,7 @@ start/reload is needed.
 
 and then **skips the render entirely** — `home-manager-<user>.service` still
 reports success, so the failure is silent. A user who is only ever entered with
-`su - <user>` or `wsl.exe -u <user>` (never a login session) has no user
+`sudo -iu <user>` or `wsl.exe -u <user>` (never a login session) has no user
 manager, and therefore no secrets. Declare `users.users.<user>.linger = true;`
 (see `../hosts/wsl/default.nix` for `troy`) so the manager starts at boot.
 

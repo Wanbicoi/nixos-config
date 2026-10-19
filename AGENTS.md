@@ -56,12 +56,16 @@ Option definitions beat recollection; read the module from the flake inputs:
   (`git config --system ...`, files dropped in `/etc`) never persist. Change the
   module and switch, or pass an env override for a one-off
   (`GIT_CONFIG_GLOBAL=...`).
+- `su - <user>` does not work here: `su` authenticates as the *target* user via
+  PAM, and neither `nixos` nor `troy` declares a password hash (both are `!` =
+  locked in `/etc/shadow`), so the prompt can never be satisfied. Use
+  `sudo -iu <user>` (wheel is NOPASSWD) or `wsl.exe -u <user>`.
 - `/srv/nixconfig` is a git checkout owned by `nixos`, shared with `troy` via
   group `nixconfig`, and flake evaluation runs as root under sudo — hence the
   `safe.directory` entries in `hosts/wsl/default.nix`. Repos under `/srv/shared`
   have the same cross-identity ownership mix.
-- `troy` is never a login session of this distro (entered with `su - troy` or
-  `wsl.exe -u troy`), so anything that needs a systemd *user* manager must be
+- `troy` is never a login session of this distro (entered with `sudo -iu troy`
+  or `wsl.exe -u troy`), so anything that needs a systemd *user* manager must be
   declared (`users.users.troy.linger`) — see `secrets/README.md` troubleshooting.
 - `exec zsh -l` in an already-open shell to pick up a switch; `programs.zsh.envExtra`
   lands in `~/.zshenv`, so secrets/aliases only reach zsh.

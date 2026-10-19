@@ -3,7 +3,9 @@
 # `nixos` is the personal profile and the WSL default user (uid 1000). Company
 # profiles live on the same distro as extra users — `troy` is Laidon; when you
 # join another company add one more block here. Enter a non-default user with
-# `wsl.exe -d <distro> -u <user>` from Windows or `su - <user>` inside.
+# `wsl.exe -d <distro> -u <user>` from Windows or `sudo -iu <user>` inside
+# (`su` cannot work: it authenticates as the target user, and no profile
+# declares a password hash).
 #
 # NixOS-WSL only auto-creates `wsl.defaultUser`; the others are declared here.
 # The default user must keep uid 1000: the /mnt/c drvfs mount maps Windows
@@ -23,6 +25,18 @@
   networking.hostName = "nixos-wsl";
 
   system.stateVersion = "26.05";
+
+  # `acli` (Atlassian CLI, in troy's Laidon profile) is licensed unfree, so
+  # nixpkgs refuses to evaluate it. A predicate keeps this a deliberate
+  # per-package exception instead of a blanket `allowUnfree = true`; the
+  # FHS wrapper (`acli`) and the binary it wraps (`acli-unwrapped`) each need
+  # an entry because the license check runs per derivation.
+  nixpkgs.config.allowUnfreePredicate =
+    pkg:
+    builtins.elem (pkgs.lib.getName pkg) [
+      "acli"
+      "acli-unwrapped"
+    ];
 
   wsl.defaultUser = "nixos";
 
@@ -91,8 +105,8 @@
     #   manual start/reload is needed.
     #
     # That assumption does not hold here. troy is never a login session of
-    # this distro -- it is entered with `su - troy` or `wsl.exe -u troy` from
-    # nixos -- so /run/user/1001 would never appear and ~/.config/sops-nix
+    # this distro -- it is entered with `sudo -iu troy` or `wsl.exe -u troy`
+    # from nixos -- so /run/user/1001 would never appear and ~/.config/sops-nix
     # would never be created, leaving every sops env var empty in troy's
     # shells. Linger starts user@1001 at boot, so the secrets are rendered
     # without an interactive session. (nixos is the WSL default user and gets

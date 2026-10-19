@@ -54,7 +54,7 @@
       format = "$username$directory$git_branch$git_status$fill$cmd_duration$line_break$character";
 
       # Always show who you are: several users share this distro, and a plain
-      # `su - troy` prompt would otherwise look identical to nixos'.
+      # prompt under `sudo -iu troy` would otherwise look identical to nixos'.
       username = {
         show_always = true;
         style_user = "bold cyan";

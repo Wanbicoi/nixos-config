@@ -94,7 +94,9 @@ company means a new `home/<user>/` profile plus one `users.users.<user>` block
 in `hosts/wsl/default.nix`.
 
 Enter a non-default user with `wsl.exe -d <distro> -u <user>` from Windows or
-`su - <user>` inside.
+`sudo -iu <user>` inside. `su - <user>` cannot work: `su` asks for the target
+user's password, and no profile declares one (both accounts are locked `!` in
+`/etc/shadow`).
 
 ### Adding a company user
 
