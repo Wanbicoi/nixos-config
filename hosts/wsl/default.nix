@@ -83,6 +83,22 @@
     ];
     shell = pkgs.zsh;
 
+    # Home Manager renders sops secrets from a *user* service
+    # (`systemctl --user restart sops-nix`), and its activation silently skips
+    # that step when no user manager is running:
+    #
+    #   User systemd daemon not running. Probably executed on boot where no
+    #   manual start/reload is needed.
+    #
+    # That assumption does not hold here. troy is never a login session of
+    # this distro -- it is entered with `su - troy` or `wsl.exe -u troy` from
+    # nixos -- so /run/user/1001 would never appear and ~/.config/sops-nix
+    # would never be created, leaving every sops env var empty in troy's
+    # shells. Linger starts user@1001 at boot, so the secrets are rendered
+    # without an interactive session. (nixos is the WSL default user and gets
+    # a manager from its own login session.)
+    linger = true;
+
     # Windows Explorer reaches Linux files through \\wsl.localhost\<distro>,
     # and that 9p share runs as the *default* user (nixos), not as troy. The
     # default homeMode 0700 therefore made /home/troy show up as
