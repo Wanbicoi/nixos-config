@@ -161,6 +161,28 @@ The sops age key is **not** in the repo; each home needs its own copy at
 `~/.config/sops/age/keys.txt` (see below). `umask 002` (set in
 `home/common/shell.nix`) keeps newly written files group-writable.
 
+## Shared folder
+
+Homes are private: `/home/nixos` is 0700 and `/home/troy` is 0750 (browsable
+only, so Windows Explorer can list it). Anything both identities should read
+*and* write belongs in `/srv/shared` instead of a home directory, which
+avoids relaxing permissions on `~/.ssh`, sops age keys, or browser sessions.
+
+`/srv/shared` is declared in `hosts/wsl/default.nix` as a `systemd.tmpfiles`
+rule: `d /srv/shared 2775 root shared -`. The setgid bit means files created
+below it inherit the `shared` group regardless of which user made them, and
+`umask 002` gives them group write. Apart from that nothing to set up — the
+directory appears on the next `make switch`:
+
+```bash
+cd /srv/shared
+mkdir project && ls -ld .      # drwxrwsr-x ... root shared
+```
+
+Do not fix cross-user access by recursively `chmod`-ing a home: that opens
+everything (including 0600 secrets) or is masked out on exactly those files,
+so it either over-shares or achieves nothing. Move the data here instead.
+
 ## Secrets
 
 Secrets are committed encrypted under `secrets/` and decrypted at activation

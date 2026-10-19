@@ -27,6 +27,11 @@
 
   # The shared checkout is owned by another user, so git (and the flake
   # evaluation during nixos-rebuild) would otherwise reject it as
-  # "dubious ownership".
-  programs.git.settings.safe.directory = [ "/srv/nixconfig" ];
+  # "dubious ownership". /srv/shared is the cross-identity workspace (declared
+  # in hosts/wsl/default.nix) and gets the same treatment, since repos cloned
+  # there by one user will be touched by the other.
+  programs.git.settings.safe.directory = [
+    "/srv/nixconfig"
+    "/srv/shared"
+  ];
 }

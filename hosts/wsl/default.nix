@@ -29,11 +29,43 @@
   # Shared write access to /srv/nixconfig (path set in home/common/wsl.nix).
   users.groups.nixconfig = { };
 
+  # Cross-identity workspace. Homes stay private (see homeMode below); anything
+  # both users should reach lives here instead. The group is deliberately
+  # separate from `nixconfig` so revoking workspace access does not also revoke
+  # the ability to edit this repo.
+  users.groups.shared = { };
+
+  # `d` = create if missing, mode 2775. The setgid bit makes new files and
+  # directories inherit the `shared` group, so group access does not depend on
+  # each user's default primary group. Needs umask 002 (set in
+  # home/common/shell.nix) to actually produce 0664/0775 files; otherwise a
+  # plain 022 umask still lets the owner write but caps group write.
+  systemd.tmpfiles.rules = [
+    "d /srv/shared 2775 root shared -"
+  ];
+
+  # `nixos-rebuild switch --flake .#wsl` evaluates the flake as root, and git
+  # refuses any repo whose owner is not the current user. The per-user
+  # `safe.directory` in home/common/wsl.nix only covers the two login users,
+  # so root needs the system-wide equivalent (this writes /etc/gitconfig).
+  # Without it, `make switch` dies with "repository path '/srv/nixconfig' is
+  # not owned by current user".
+  programs.git = {
+    enable = true;
+    config.safe.directory = [
+      "/srv/nixconfig"
+      "/srv/shared"
+    ];
+  };
+
   # `wsl.defaultUser` already makes nixos a normal user with uid 1000 and the
   # wheel group; only the shell and extra group are needed here.
   users.users.nixos = {
     shell = pkgs.zsh;
-    extraGroups = [ "nixconfig" ];
+    extraGroups = [
+      "nixconfig"
+      "shared"
+    ];
   };
 
   users.users.troy = {
@@ -42,6 +74,7 @@
     extraGroups = [
       "wheel"
       "nixconfig"
+      "shared"
     ];
     shell = pkgs.zsh;
 

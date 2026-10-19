@@ -29,6 +29,19 @@
     '';
   };
 
+  # zoxide as a smarter `cd`: `--cmd cd` makes zoxide define `cd` (and `cdi`
+  # for the fzf picker) instead of `z`/`zi`. zoxide's `cd` still behaves like
+  # the builtin for real paths (`cd ..`, `cd /etc`, `cd -`), and falls back to
+  # its frecency database for anything that is not an existing path.
+  programs.zoxide = {
+    enable = true;
+    enableZshIntegration = true;
+    options = [
+      "--cmd"
+      "cd"
+    ];
+  };
+
   programs.starship = {
     enable = true;
     enableZshIntegration = true;
