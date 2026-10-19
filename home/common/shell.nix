@@ -36,9 +36,18 @@
       # Keep a blank line between command output and the prompt.
       add_newline = true;
 
-      # First prompt line: context, then a fill that pushes the last
+      # First prompt line: user, context, then a fill that pushes the last
       # command's duration to the end of the line, then the input character.
-      format = "$directory$git_branch$git_status$fill$cmd_duration$line_break$character";
+      format = "$username$directory$git_branch$git_status$fill$cmd_duration$line_break$character";
+
+      # Always show who you are: several users share this distro, and a plain
+      # `su - troy` prompt would otherwise look identical to nixos'.
+      username = {
+        show_always = true;
+        style_user = "bold cyan";
+        style_root = "bold red";
+        format = "[$user]($style) in ";
+      };
 
       # Dashes instead of a solid rule, so the fill reads as spaced out.
       fill = {
