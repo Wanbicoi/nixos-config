@@ -59,11 +59,15 @@ Option definitions beat recollection; read the module from the flake inputs:
 - `su - <user>` does not work here: `su` authenticates as the *target* user via
   PAM, and neither `nixos` nor `troy` declares a password hash (both are `!` =
   locked in `/etc/shadow`), so the prompt can never be satisfied. Use
-  `sudo -iu <user>` (wheel is NOPASSWD) or `wsl.exe -u <user>`.
-- `/srv/nixconfig` is a git checkout owned by `nixos`, shared with `troy` via
-  group `nixconfig`, and flake evaluation runs as root under sudo — hence the
-  `safe.directory` entries in `hosts/wsl/default.nix`. Repos under `/srv/shared`
-  have the same cross-identity ownership mix.
+  `sudo -iu <user>` (run as nixos) or `wsl.exe -u <user>`. Only `nixos` is in
+  `wheel`/has sudo; company personas (`troy`) are non-admin, so `make switch`
+  is a nixos-only action.
+- `/srv/nixconfig` is a git checkout owned by `nixos`; `troy` is in the
+  `nixconfig` group but only to **read** it (mode `2750`), never write it,
+  because root re-uses the checkout when evaluating the flake and activating —
+  write access to it would be root. Hence the `safe.directory` entries in
+  `hosts/wsl/default.nix`. Repos under `/srv/shared` have their own
+  cross-identity ownership mix.
 - `troy` is never a login session of this distro (entered with `sudo -iu troy`
   or `wsl.exe -u troy`), so anything that needs a systemd *user* manager must be
   declared (`users.users.troy.linger`) — see `secrets/README.md` troubleshooting.

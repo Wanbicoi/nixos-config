@@ -6,7 +6,7 @@ FLAKE ?= .
 NVIM_DIR ?= submodules/nvim
 AGENT_DIR ?= submodules/agent-config
 AGENT_REMOTE ?= git@github.com:CHANGE_ME/agent-config.git
-FILE ?= secrets/common.yaml
+FILE ?= secrets/personal.yaml
 
 NIXOS_REBUILD = sudo nixos-rebuild
 
@@ -87,5 +87,5 @@ agent-remote: ## Point agent-config at your remote: make agent-remote AGENT_REMO
 
 ## --- secrets ---
 
-secrets-edit: ## Edit encrypted secrets (FILE=secrets/common.yaml)
+secrets-edit: ## Edit encrypted secrets (FILE=secrets/personal.yaml)
 	sops $(FILE)

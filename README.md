@@ -110,58 +110,66 @@ user's password, and no profile declares one (both accounts are locked `!` in
    users.users.<company> = {
      isNormalUser = true;
      uid = 1002;
-     extraGroups = [ "wheel" "nixconfig" ];
+     extraGroups = [ "nixconfig" "shared" ];  # NO "wheel": see below
      shell = pkgs.zsh;
    };
    # ...
    home-manager.users.<company>.imports = [ ../../home/<company> ];
    ```
 
+   Company users are deliberately **not** in `wheel`: no `sudo`, no
+   trusted-user status. `nixos` is the only admin and the only user who runs
+   `make switch`; a company persona enters its home with `wsl.exe -u <company>`
+   or `sudo -iu <company>` (run by nixos).
+
 3. Rebuild once, then give the new home a sops age key and restart its unit —
-   the first activation fails because the key is missing:
+   the first activation fails because the key is missing. Each persona has its
+   **own** key (see "Secrets" below), so generate one rather than copying
+   nixos's:
 
    ```bash
    sudo nixos-rebuild switch --flake /srv/nixconfig#wsl
-   sudo -u <company> install -d -m 0700 /home/<company>/.config/sops/age
-   sudo -u <company> install -m 0400 \
-     /home/nixos/.config/sops/age/keys.txt \
-     /home/<company>/.config/sops/age/keys.txt
+   sudo -u <company> mkdir -p /home/<company>/.config/sops/age
+   sudo -u <company> age-keygen -o /home/<company>/.config/sops/age/keys.txt
+   # add its `age1...` public key as a new recipient in .sops.yaml, then rekey:
+   # sops updatekeys secrets/<company>.yaml
    sudo systemctl restart home-manager-<company>.service
    ```
 
-   Run the copy **as the new user** so ownership is right. A plain
+   Run the key generation **as the new user** so ownership is right. A plain
    `sudo install -o <uid> ...` only applies `-o`/`-g` to the last path
    component, leaving parent directories root-owned — which then breaks Home
    Manager with `mkdir: Permission denied`.
 
 ## Shared checkout
 
-All users share a single nixconfig checkout at `/srv/nixconfig` (set via
-`submodules.repoRoot` in `home/common/wsl.nix`) so the submodules and agent
-state are not duplicated per home. It lives outside the homes and is owned by
-the `nixconfig` group. One-time setup — note the order: the group only exists
-after the first rebuild, so `chgrp` comes after it.
+nixos **owns** the single nixconfig checkout at `/srv/nixconfig` (set via
+`submodules.repoRoot` in `home/common/wsl.nix`). Company users are in the
+`nixconfig` group only so they can **read** it — never write it, because root
+re-uses the checkout when evaluating the flake and activating the system, so
+write access would be equivalent to root. The tree is `2750 nixos:nixconfig`
+(declared as a `tmpfiles` `z` rule in `hosts/wsl/default.nix`). One-time setup —
+note the order: the group only exists after the first rebuild.
 
 ```bash
 # 1. Move the checkout to the shared location.
 sudo mv ~/nixconfig /srv/nixconfig
 
-# 2. Apply once: creates the nixconfig group + users and points their
-#    submodule symlinks at /srv/nixconfig. A user without a sops age key will
-#    have its Home Manager unit fail here; seed the key as that user and
-#    restart the unit (see "Adding a company user" above).
+# 2. Apply once: creates the nixconfig group + users and (via tmpfiles) sets
+#    the 2750 mode. A user without a sops age key will have its Home Manager
+#    unit fail here.
 sudo nixos-rebuild switch --flake /srv/nixconfig#wsl
 
-# 3. Hand the checkout to the group and keep it group-writable.
+# 3. Ensure the checkout is group-readable (idempotent).
 sudo chgrp -R nixconfig /srv/nixconfig
-sudo chmod -R g+rwX    /srv/nixconfig
-sudo find /srv/nixconfig -type d -exec chmod g+s {} +
+sudo chmod -R u+rwX,g+rX,o-rwx /srv/nixconfig
 git -C /srv/nixconfig submodule update --init --recursive
 ```
 
-The sops age key is **not** in the repo; each home needs its own copy at
-`~/.config/sops/age/keys.txt` (see below). `umask 002` (set in
-`home/common/shell.nix`) keeps newly written files group-writable.
+Agent state (Pi `auth.json`/`sessions/`/`npm/`, etc.) is **per-user**: it lives
+in each home's own `~/.pi/agent`, never in the shared checkout (see
+`home/common/submodules.nix`). The checkout holds only the portable declarative
+config that gets linked into each home read-only.
 
 ## Shared folder
 

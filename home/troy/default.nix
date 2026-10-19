@@ -9,5 +9,6 @@
     ../common/wsl.nix
     ./identity.nix
     ./packages.nix
+    ./secrets.nix
   ];
 }

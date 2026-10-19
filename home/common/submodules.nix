@@ -34,8 +34,18 @@ in
 
     # --- Shared agent config (agent-config submodule) -------------------------
 
-    # Pi: the whole agent dir (auth/sessions/npm are gitignored in the repo).
-    home.file.".pi/agent".source = link "${agentConfig}/pi";
+    # Pi: only the portable, user-authored subset is linked. Everything Pi
+    # writes at runtime (auth.json, trust.json, models-store.json, sessions/,
+    # npm/, web-search-cache/, tmp/, extensions/) is a real, per-user file in
+    # ~/.pi/agent, so credentials and session history never live inside the
+    # shared checkout where another persona could read them.
+    #
+    # The directory itself is deliberately NOT claimed by Home Manager (no
+    # `home.file.".pi/agent"` entry): Pi owns it and creates the state
+    # entries on first run. Claiming it would make Home Manager fight Pi over
+    # files it does not manage.
+    home.file.".pi/agent/AGENTS.md".source = link "${agentConfig}/AGENTS.md";
+    home.file.".pi/agent/settings.json".source = link "${agentConfig}/pi/settings.json";
 
     # OpenCode: the whole global config dir.
     xdg.configFile."opencode".source = link "${agentConfig}/opencode";

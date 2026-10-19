@@ -8,5 +8,6 @@
     ../common
     ../common/wsl.nix
     ./identity.nix
+    ./secrets.nix
   ];
 }

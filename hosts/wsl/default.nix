@@ -40,7 +40,10 @@
 
   wsl.defaultUser = "nixos";
 
-  # Shared write access to /srv/nixconfig (path set in home/common/wsl.nix).
+  # Shared read access to /srv/nixconfig (path set in home/common/wsl.nix).
+  # nixos owns and writes it; company users are in the group only to read it.
+  # The directory's mode is the git checkout's own 2775 -> tightened to 2750
+  # below so the group cannot write the flake that root rebuilds.
   users.groups.nixconfig = { };
 
   # Cross-identity workspace. Homes stay private (see homeMode below); anything
@@ -54,8 +57,15 @@
   # each user's default primary group. Needs umask 002 (set in
   # home/common/shell.nix) to actually produce 0664/0775 files; otherwise a
   # plain 022 umask still lets the owner write but caps group write.
+  #
+  # `/srv/nixconfig` is the admin-owned flake checkout; the `z` rule tightens
+  # it to 2750 so company users in the nixconfig group can read but never
+  # write what root later evaluates. (Read-only still leaks any plaintext in
+  # the flake and its /nix/store copies to the group — keep personal data out
+  # of the repo, in homes.)
   systemd.tmpfiles.rules = [
     "d /srv/shared 2775 root shared -"
+    "z /srv/nixconfig 2750 nixos nixconfig - -"
   ];
 
   # `nixos-rebuild switch --flake .#wsl` evaluates the flake as root, and git
@@ -87,11 +97,14 @@
     ];
   };
 
+  # troy (Laidon) is a plain company user: it has no wheel/root (so no
+  # sudo and no trusted-user), no write access to the flake, and only read
+  # access to /srv/nixconfig via the nixconfig group. `make switch`
+  # (sudo nixos-rebuild) is therefore a nixos-only action.
   users.users.troy = {
     isNormalUser = true;
     uid = 1001;
     extraGroups = [
-      "wheel"
       "nixconfig"
       "shared"
     ];

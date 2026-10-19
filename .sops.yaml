@@ -3,10 +3,18 @@
 # Secrets live encrypted under secrets/ and are decrypted at activation by
 # sops-nix. The matching private key is NOT in this repo; it lives at
 # ~/.config/sops/age/keys.txt (back it up somewhere safe!).
+#
+# Each employer has its own namespace so one leaked key can only decrypt that
+# employer's secrets, never a coworker's or the personal profile's.
 keys:
-  - &admin age1mggn2tdtxwe3vjc3vtq3g4a4xvlvx97swlpejsc6gaeqrjy5vses8mx63t
+  - &personal age1mggn2tdtxwe3vjc3vtq3g4a4xvlvx97swlpejsc6gaeqrjy5vses8mx63t
+  - &laidon age1k6kaqwqmzgdtt6utcf5wflhvwxs2prfwjxkzz4z5ezg92xefegsss27gjd
 
 creation_rules:
-  - path_regex: secrets/.*\.ya?ml$
+  - path_regex: secrets/personal\.ya?ml$
     age:
-      - *admin
+      - *personal
+
+  - path_regex: secrets/laidon\.ya?ml$
+    age:
+      - *laidon
