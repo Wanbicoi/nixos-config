@@ -1,10 +1,10 @@
 # nixconfig — convenience wrappers around nixos-rebuild, flake, hooks and
 # submodule maintenance. Run `make` (or `make help`) to list targets.
 
-HOST ?= wsl
 FLAKE ?= .
 NVIM_DIR ?= submodules/nvim
 AGENT_DIR ?= submodules/agent-config
+LAZYGIT_DIR ?= submodules/lazygit
 AGENT_REMOTE ?= git@github.com:CHANGE_ME/agent-config.git
 FILE ?= secrets/personal.yaml
 
@@ -20,7 +20,8 @@ NIXOS_REBUILD = sudo nixos-rebuild
 .PHONY: help switch switch-laidon build test boot dry rollback generations \
         update update-input upgrade check hooks \
         nvim-init nvim-update secrets-edit \
-        agent-init agent-update agent-remote
+        agent-init agent-update agent-remote \
+        lazygit-init lazygit-update
 
 help: ## Show this help
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) \
@@ -29,8 +30,8 @@ help: ## Show this help
 
 ## --- system ---
 
-switch: ## Build + activate HOST (default: wsl)
-	$(NIXOS_REBUILD) switch --flake $(FLAKE)#$(HOST)
+switch-personal: ## Build + activate HOST (default: wsl)
+	$(NIXOS_REBUILD) switch --flake $(FLAKE)#wsl
 
 switch-laidon: ## Build + activate wsl-laidon (inside that distro)
 	@if [ "$${WSL_DISTRO_NAME:-}" != "$(LAIDON_DISTRO)" ] && [ "$$(hostname)" != "wsl-laidon" ]; then \
@@ -98,6 +99,15 @@ agent-remote: ## Point agent-config at your remote: make agent-remote AGENT_REMO
 	git submodule set-url $(AGENT_DIR) $(AGENT_REMOTE)
 	git submodule sync $(AGENT_DIR)
 	@echo "Updated $(AGENT_DIR) URL. Commit .gitmodules, then push the repo."
+
+## --- lazygit config submodule ---
+
+lazygit-init: ## Clone the lazygit submodule
+	git submodule update --init --recursive $(LAZYGIT_DIR)
+
+lazygit-update: ## Pull the latest lazygit config, stage the new pointer
+	git submodule update --remote $(LAZYGIT_DIR)
+	git add $(LAZYGIT_DIR)
 
 ## --- secrets ---
 

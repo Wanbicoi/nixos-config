@@ -10,6 +10,7 @@
     nixd
 
     lazygit
+    delta
     python3
     pnpm
     nodejs

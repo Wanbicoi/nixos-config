@@ -15,6 +15,7 @@ let
 
   nvimConfig = "${cfg.repoRoot}/submodules/nvim";
   agentConfig = "${cfg.repoRoot}/submodules/agent-config";
+  lazygitConfig = "${cfg.repoRoot}/submodules/lazygit";
   link = path: config.lib.file.mkOutOfStoreSymlink path;
 in
 {
@@ -31,6 +32,9 @@ in
   config = {
     # Neovim: the Lua config from the nvim submodule as ~/.config/nvim.
     xdg.configFile."nvim".source = link nvimConfig;
+
+    # Lazygit: config directory from the lazygit submodule as ~/.config/lazygit.
+    xdg.configFile."lazygit".source = link lazygitConfig;
 
     # --- Shared agent config (agent-config submodule) -------------------------
 

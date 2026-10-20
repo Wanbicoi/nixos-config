@@ -4,3 +4,6 @@
 [submodule "nvim"]
 	path = submodules/nvim
 	url = https://github.com/Wanbicoi/nvim-config.git
+[submodule "submodules/lazygit"]
+	path = submodules/lazygit
+	url = https://github.com/Wanbicoi/lazygit-config.git
