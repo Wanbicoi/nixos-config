@@ -37,6 +37,11 @@
     ];
   };
 
+  # Claude Code runs each command in a shell rebuilt from a snapshot that drops
+  # zoxide's chpwd hook, so zoxide's self-check warns on every `cd`. The hook
+  # is intact in real terminals; silence the check.
+  home.sessionVariables._ZO_DOCTOR = "0";
+
   programs.starship = {
     enable = true;
     enableZshIntegration = true;
