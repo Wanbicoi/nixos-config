@@ -10,6 +10,7 @@
     ./submodules.nix
     ./shell.nix
     ./programs.nix
+    ./herdr.nix
     ./packages.nix
   ];
 

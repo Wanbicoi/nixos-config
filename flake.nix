@@ -2,9 +2,13 @@
   description = "Nix configuration for laptops, NixOS-WSL, and macOS";
 
   nixConfig = {
-    extra-substituters = [ "https://cache.numtide.com" ];
+    extra-substituters = [
+      "https://cache.numtide.com"
+      "https://herdr.cachix.org"
+    ];
     extra-trusted-public-keys = [
       "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+      "herdr.cachix.org-1:3nH7IStRsS0ASfdonA0DCRR2ZrSCeWitZ7Kwew0cR4I="
     ];
   };
 
@@ -25,6 +29,10 @@
     # against its own pinned nixpkgs-unstable. Leaving it independent also
     # lets us pull pre-built binaries from the Numtide cache.
     llm-agents.url = "github:numtide/llm-agents.nix";
+
+    # Herdr terminal workspace manager. Same reasoning as llm-agents: no
+    # `nixpkgs.follows`, so binaries match the herdr.cachix.org cache.
+    herdr-nix.url = "github:herdrdev/herdr-nix";
 
     # Declarative git pre-commit hooks.
     pre-commit-hooks = {
