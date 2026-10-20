@@ -34,6 +34,12 @@
     # `nixpkgs.follows`, so binaries match the herdr.cachix.org cache.
     herdr-nix.url = "github:herdrdev/herdr-nix";
 
+    # Hunk: review-first terminal diff viewer.
+    hunk = {
+      url = "github:modem-dev/hunk";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Declarative git pre-commit hooks.
     pre-commit-hooks = {
       url = "github:cachix/git-hooks.nix";
