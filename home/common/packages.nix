@@ -11,6 +11,7 @@
 
     lazygit
     delta
+    mpg123
     python3
     pnpm
     nodejs
