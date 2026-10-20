@@ -8,12 +8,13 @@
 
   programs.hunk = {
     enable = true;
-    enableGitIntegration = true;
+    enableGitIntegration = false;
     settings = {
-      theme = "graphite";
+      theme = "slack-ochin";
       mode = "split";
       line_numbers = true;
       tab_width = 4;
+      sidebar = true;
     };
   };
 }
