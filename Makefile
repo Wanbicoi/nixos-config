@@ -1,6 +1,8 @@
 # nixconfig — convenience wrappers around nixos-rebuild, flake, hooks and
 # submodule maintenance. Run `make` (or `make help`) to list targets.
 
+# Default HOST to current machine's hostname (e.g. "wsl" or "wsl-laidon")
+HOST ?= $(shell hostname)
 FLAKE ?= .
 NVIM_DIR ?= submodules/nvim
 AGENT_DIR ?= submodules/agent-config
@@ -17,7 +19,7 @@ NIXOS_REBUILD = sudo nixos-rebuild
 
 .DEFAULT_GOAL := secrets-edit
 
-.PHONY: help switch switch-laidon build test boot dry rollback generations \
+.PHONY: help switch build test boot dry rollback generations \
         update update-input upgrade check hooks \
         nvim-init nvim-update secrets-edit \
         agent-init agent-update agent-remote \
@@ -30,17 +32,13 @@ help: ## Show this help
 
 ## --- system ---
 
-switch-personal: ## Build + activate HOST (default: wsl)
-	$(NIXOS_REBUILD) switch --flake $(FLAKE)#wsl
-
-switch-laidon: ## Build + activate wsl-laidon (inside that distro)
-	@if [ "$${WSL_DISTRO_NAME:-}" != "$(LAIDON_DISTRO)" ] && [ "$$(hostname)" != "wsl-laidon" ]; then \
+switch: ## Build + activate HOST (defaults to current host)
+	@if [ "$(HOST)" = "wsl-laidon" ] && [ "$${WSL_DISTRO_NAME:-}" != "$(LAIDON_DISTRO)" ] && [ "$$(hostname)" != "wsl-laidon" ]; then \
 		echo "refusing: this is '$${WSL_DISTRO_NAME:-<not WSL>}', not '$(LAIDON_DISTRO)'"; \
-		echo "switch-laidon swaps the nixos/troy uids; run it in the company distro."; \
-		echo "override with: make switch-laidon LAIDON_DISTRO=<distro-name>"; \
+		echo "wsl-laidon swaps the nixos/troy uids; run it in the company distro."; \
 		exit 1; \
 	fi
-	$(NIXOS_REBUILD) switch --flake $(FLAKE)#wsl-laidon
+	$(NIXOS_REBUILD) switch --flake $(FLAKE)#$(HOST)
 
 build: ## Build HOST without activating
 	$(NIXOS_REBUILD) build --flake $(FLAKE)#$(HOST)
