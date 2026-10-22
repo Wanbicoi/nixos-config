@@ -61,6 +61,14 @@ in
     home.file.".claude/CLAUDE.md".source = link "${agentConfig}/AGENTS.md";
     home.file.".claude/agents".source = link "${agentConfig}/claude/agents";
     home.file.".claude/commands".source = link "${agentConfig}/claude/commands";
+
+    # Antigravity CLI (agy): shares global skills and AGENTS.md instructions.
+    # Global customizations reside in ~/.gemini/config/.
+    # home.file.".gemini/config/AGENTS.md".source = link "${agentConfig}/AGENTS.md";
+    # home.file.".gemini/config/skills".source = link "${agentConfig}/skills";
+    home.file.".gemini/antigravity-cli/AGENTS.md".source = link "${agentConfig}/AGENTS.md";
+    home.file.".gemini/antigravity-cli/skills".source = link "${agentConfig}/skills";
+
     # Skills: one canonical directory in the repo, shared by every agent.
     # Pi and OpenCode read ~/.agents/skills; Claude Code reads ~/.claude/skills.
     home.file.".agents/skills".source = link "${agentConfig}/skills";
