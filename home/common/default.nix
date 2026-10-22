@@ -10,7 +10,6 @@
     ./submodules.nix
     ./shell.nix
     ./programs.nix
-    ./hunk.nix
     # ./herdr.nix # Disabled while testing; will declare with nix once config is mature
     ./packages.nix
   ];
