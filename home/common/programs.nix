@@ -5,6 +5,16 @@
   # Identity (name/email) is per-user; see home/<user>/identity.nix.
   programs.git.enable = true;
 
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+    config = {
+      global = {
+        hide_env_diff = true;
+      };
+    };
+  };
+
   # programs.git writes ~/.config/git/config as a read-only store symlink, so
   # anything that runs `git config --global` (glab, gh, gcloud, ...) fails with
   # "could not lock config file ... Read-only file system".
