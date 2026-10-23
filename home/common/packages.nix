@@ -8,24 +8,30 @@
 {
   home.packages =
     (with pkgs; [
+      # apps
       neovim
       tree-sitter
+      lazygit
+      delta
+      mpg123
 
       # Nix LSP + formatter for the editor (nvim LSP / conform).
       nixd
 
-      lazygit
-      delta
-      mpg123
       python3
+
+      # nodes
       pnpm
+      bun
       nodejs
+
       cargo
       rustc
       go
 
       gcc
       gnumake
+
       sops
       age
 
