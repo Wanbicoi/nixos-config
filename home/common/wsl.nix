@@ -6,9 +6,9 @@
 
 {
   home.packages = with pkgs; [
-    # Wayland clipboard (wl-copy/wl-paste). WSLg exposes a Wayland socket,
-    # which bridges to the Windows clipboard.
-    wl-clipboard
+    # Wayland clipboard (wl-copy/wl-paste). Disabled due to unstable WSLg
+    # Weston compositor crashes (#1519, #1523). Neovim uses OSC 52 instead.
+    # wl-clipboard
 
     # xdg-open/xdg-mime/xdg-settings for apps that shell out to them.
     xdg-utils
