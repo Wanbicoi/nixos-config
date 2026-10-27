@@ -56,11 +56,16 @@
   # umask: without them a normal 022 umask would create 0644 files in the
   # setgid directory, and the other identity could not edit them. Regular
   # files still get no execute bit — the mode passed to open() masks the ACL.
+  #
+  # Explorer's 9p share runs as WSL's default user (troy). Grant troy rx on
+  # /home/nixos via POSIX ACL so Windows Explorer can browse nixos's home
+  # without loosening the base 0700 permissions to other users.
   systemd.tmpfiles.rules = [
     "d /srv/shared 2775 root shared -"
     "a /srv/shared - - - - g:shared:rwx"
     "a /srv/shared - - - - d:g:shared:rwx"
     "z /srv/nixconfig 2750 nixos nixconfig - -"
+    "a /home/nixos - - - - u:troy:rx"
   ];
 
   # `nixos-rebuild switch --flake .#wsl-laidon` evaluates as root, and git
@@ -110,7 +115,8 @@
   };
 
   # Explorer's 9p share runs as the default user (troy), so /home/troy stays
-  # 0700 with no browse grant. /home/nixos is never exposed that way.
+  # 0700 with no browse grant. /home/nixos is granted u:troy:rx in tmpfiles
+  # above so Explorer can browse nixos's home.
 
   # One Home Manager profile per user; both share modules/nixos and home/common.
   home-manager = {
