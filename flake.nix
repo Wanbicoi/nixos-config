@@ -34,6 +34,7 @@
     # `nixpkgs.follows`, so binaries match the herdr.cachix.org cache.
     herdr-nix.url = "github:herdrdev/herdr-nix";
 
+    # TODO: remove this
     # tuicr: code review TUI.
     tuicr = {
       url = "github:agavra/tuicr";
