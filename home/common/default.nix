@@ -10,7 +10,7 @@
     ./submodules.nix
     ./shell.nix
     ./programs.nix
-    # ./herdr.nix # Disabled while testing; will declare with nix once config is mature
+    # ./herdr.nix # Do not import: actively explored by user; will declare when mature
     ./packages.nix
   ];
 

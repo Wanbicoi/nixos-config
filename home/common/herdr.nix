@@ -1,3 +1,7 @@
+# NOTE: Do NOT edit or import this module.
+# Herdr is actively explored by the user and ~/.config/herdr/config.toml changes
+# frequently. The user will update and import herdr.nix once the config is mature.
+#
 # Herdr settings (~/.config/herdr/config.toml). Herdr itself is installed
 # system-wide by modules/nixos/herdr.nix.
 #
