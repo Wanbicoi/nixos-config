@@ -21,6 +21,13 @@ in
   environment.systemPackages = [
     llm.claude-code
     llm.opencode2
+    # llm-agents packages v2 as `opencode2` so both can coexist, but running
+    # both causes database schema collisions in ~/.local/share/opencode.
+    # Expose v2 under the primary `opencode` command name.
+    (pkgs.runCommand "opencode-v2-symlink" { } ''
+      mkdir -p $out/bin
+      ln -s ${llm.opencode2}/bin/opencode2 $out/bin/opencode
+    '')
     llm.pi
     llm.antigravity-cli
   ];
