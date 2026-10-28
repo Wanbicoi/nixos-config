@@ -15,5 +15,27 @@
 
     # SAP HANA Developer CLI (packaged locally for offline use).
     (callPackage ./hana-cli { })
+
+    # SAP Cloud Application Programming Model (CAP) CLI (`cds` / `cds-dk`).
+    (writeShellApplication {
+      name = "cds";
+      runtimeInputs = [
+        nodejs
+        pnpm
+      ];
+      text = ''
+        exec pnpm dlx --package=@sap/cds-dk cds "$@"
+      '';
+    })
+    (writeShellApplication {
+      name = "cds-dk";
+      runtimeInputs = [
+        nodejs
+        pnpm
+      ];
+      text = ''
+        exec pnpm dlx --package=@sap/cds-dk cds "$@"
+      '';
+    })
   ];
 }
