@@ -52,7 +52,10 @@
       fi
 
       if command -v wsl-notify-send.exe >/dev/null 2>&1; then
-        exec wsl-notify-send.exe -c "$category" "$msg"
+        # Spawn asynchronously: wsl-notify-send.exe blocks until the Windows
+        # toast notification is dismissed or times out.
+        wsl-notify-send.exe -c "$category" "$msg" </dev/null >/dev/null 2>&1 &
+        disown $! 2>/dev/null || true
       else
         echo "notify-send: wsl-notify-send.exe not found on PATH" >&2
         exit 1
