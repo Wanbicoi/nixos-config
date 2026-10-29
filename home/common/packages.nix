@@ -53,6 +53,28 @@
           exec npx --yes @playwright/cli@latest "$@"
         '';
       })
+
+      # Caveman CLI (`caveman` / `cave`) via pnpm dlx.
+      (writeShellApplication {
+        name = "caveman";
+        runtimeInputs = [
+          nodejs
+          pnpm
+        ];
+        text = ''
+          exec pnpm dlx --package=@caveman-ai/cli caveman "$@"
+        '';
+      })
+      (writeShellApplication {
+        name = "cave";
+        runtimeInputs = [
+          nodejs
+          pnpm
+        ];
+        text = ''
+          exec pnpm dlx --package=@caveman-ai/cli cave "$@"
+        '';
+      })
     ])
     ++ [
       inputs.tuicr.packages.${pkgs.stdenv.hostPlatform.system}.default
