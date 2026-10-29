@@ -89,3 +89,5 @@ Option definitions beat recollection; read the module from the flake inputs:
 - Commit subjects: prefer `type(scope): summary` — `fix(wsl): ...`, `chore(home): ...`.
 - Comments explain **why** (history, tradeoffs, non-obvious constraints), never
   what the code says; every module here follows that.
+- URLs in responses: always output the full URL instead of mentioning it as a
+  short title or link label.
