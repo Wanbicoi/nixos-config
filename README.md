@@ -238,7 +238,8 @@ distro has its own data; on `wsl-laidon` `nixos` and `troy` share one DB.
 - Ports: `4321` on `wsl`, `4323` on `wsl-laidon` (both distros may run at once).
 - Config is declarative at `/etc/journals/config.yaml`; do not edit it by hand.
 - Logs: `journalctl -u journals`; control: `sudo systemctl {status,restart} journals`.
-- After checking out or updating the submodule, run `make journals-deps`.
+- After checking out or updating the submodule, run `make journals-deps` and
+  then `sudo systemctl restart journals`.
 
 ## Secrets
 
