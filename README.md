@@ -167,8 +167,11 @@ user's password, and no profile declares one (the accounts are locked `!` in
 
 Both hosts keep the nixconfig checkout at `/srv/nixconfig` (set via
 `submodules.repoRoot` in `home/common/wsl.nix`). On the personal `wsl` distro
-only `nixos` exists, so the tree is `0700 nixos` — no other account can read
-it (`tmpfiles` `z` rule in `hosts/wsl/default.nix`).
+only `nixos` exists, but the tree is still `2750 nixos:nixconfig`: only `nixos`
+writes it, and the `journals` system user reads it through the `nixconfig`
+group (`tmpfiles` `z` rule in `hosts/wsl/default.nix`, see
+`modules/nixos/journals.nix`). The journal database itself is outside the
+checkout, at `/srv/shared/journals/`.
 
 On `wsl-laidon`, nixos still **owns** it, but company users are in the
 `nixconfig` group only so they can **read** it — never write it, because root
