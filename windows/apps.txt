@@ -1,6 +1,5 @@
 # Terminals & Shells
 Microsoft.WindowsTerminal
-wez.wezterm
 Alacritty.Alacritty
 Microsoft.PowerShell
 Microsoft.WSL

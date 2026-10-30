@@ -30,13 +30,4 @@ if (Test-Path $alacrittySource) {
     Write-Host "==> Restored Alacritty config to $alacrittyDestDir\alacritty.toml" -ForegroundColor Green
 }
 
-# Restore WezTerm config
-$weztermSource = Join-Path $scriptDir "wezterm\wezterm.lua"
-if (Test-Path $weztermSource) {
-    $weztermDestDir = Join-Path $env:USERPROFILE ".config\wezterm"
-    New-Item -ItemType Directory -Force -Path $weztermDestDir | Out-Null
-    Copy-Item $weztermSource (Join-Path $weztermDestDir "wezterm.lua") -Force
-    Write-Host "==> Restored WezTerm config to $weztermDestDir\wezterm.lua" -ForegroundColor Green
-}
-
 Write-Host "==> Done!" -ForegroundColor Green

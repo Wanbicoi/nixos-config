@@ -7,7 +7,6 @@ Backup of host Windows applications installed via Winget and terminal configurat
 - `apps.txt` - Curated list of Winget IDs for installed applications (terminals, dev tools, productivity, utilities).
 - `install-apps.ps1` - PowerShell script to batch install all applications and restore terminal configurations.
 - `alacritty/alacritty.toml` - Alacritty configuration (`JetBrainsMono Nerd Font`, `rose-pine-dawn`, auto-launches WSL with `herdr`).
-- `wezterm/wezterm.lua` - WezTerm configuration (`rose-pine-dawn`, workspaces, custom keybindings).
 
 ## How to Restore on Windows
 
