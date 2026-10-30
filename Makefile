@@ -7,6 +7,7 @@ FLAKE ?= .
 NVIM_DIR ?= submodules/nvim
 AGENT_DIR ?= submodules/agent-config
 LAZYGIT_DIR ?= submodules/lazygit
+JOURNALS_DIR ?= submodules/journals
 AGENT_REMOTE ?= git@github.com:CHANGE_ME/agent-config.git
 FILE ?= secrets/personal.yaml
 
@@ -23,7 +24,8 @@ NIXOS_REBUILD = sudo nixos-rebuild
         update update-input upgrade check hooks \
         nvim-init nvim-update secrets-edit \
         agent-init agent-update agent-remote \
-        lazygit-init lazygit-update
+        lazygit-init lazygit-update \
+        journals-init journals-update journals-deps
 
 help: ## Show this help
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) \
@@ -106,6 +108,19 @@ lazygit-init: ## Clone the lazygit submodule
 lazygit-update: ## Pull the latest lazygit config, stage the new pointer
 	git submodule update --remote $(LAZYGIT_DIR)
 	git add $(LAZYGIT_DIR)
+
+## --- journals submodule ---
+
+journals-init: ## Clone the journals submodule and install its dependencies
+	git submodule update --init --recursive $(JOURNALS_DIR)
+	$(MAKE) journals-deps
+
+journals-update: ## Pull the latest journals, stage the new pointer
+	git submodule update --remote $(JOURNALS_DIR)
+	git add $(JOURNALS_DIR)
+
+journals-deps: ## Install journals dependencies (run as the checkout owner)
+	cd $(JOURNALS_DIR) && bun install --frozen-lockfile
 
 ## --- secrets ---
 

@@ -26,9 +26,15 @@
     ../../modules/nixos/wsl.nix
     ../../modules/nixos/llm-agents.nix
     ../../modules/nixos/herdr.nix
+    ../../modules/nixos/journals.nix
   ];
 
   networking.hostName = "wsl-laidon";
+
+  # Distinct from the personal distro in case both run concurrently (WSL may
+  # share one network namespace).
+  services.journals.enable = true;
+  services.journals.port = 4323;
 
   system.stateVersion = "26.05";
 

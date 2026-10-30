@@ -10,6 +10,7 @@
     ./submodules.nix
     ./shell.nix
     ./programs.nix
+    ./journals.nix
     # ./herdr.nix # Do not import: actively explored by user; will declare when mature
     ./packages.nix
   ];

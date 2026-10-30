@@ -13,6 +13,7 @@ Declarative configuration for my machines — NixOS laptops, NixOS-WSL, and
 | `modules/darwin/` | nix-darwin modules (placeholder). |
 | `home/common/` | Home Manager modules shared by every user profile. |
 | `home/<user>/` | Per-user identity and user-specific packages. |
+| `submodules/` | Config checkouts (`nvim`, `agent-config`, `lazygit`) plus the `journals` source used by its system service. |
 | `secrets/` | Age-encrypted secrets, decrypted at activation by sops-nix. See [`secrets/README.md`](secrets/README.md). |
 
 ## Machines
@@ -222,6 +223,19 @@ mkdir project && ls -ld .      # drwxrwsr-x ... root shared
 Do not fix cross-user access by recursively `chmod`-ing a home: that opens
 everything (including 0600 secrets) or is masked out on exactly those files,
 so it either over-shares or achieves nothing. Move the data here instead.
+
+## Journals
+
+The journals daemon runs as the `journals` system user on boot and owns
+`/srv/shared/journals/data.sqlite` (`modules/nixos/journals.nix`). The TUI
+(`journals`) only talks to it over `127.0.0.1`, so every user on a machine
+shares one journal. The same `db_path` is used on both distros, but each
+distro has its own data; on `wsl-laidon` `nixos` and `troy` share one DB.
+
+- Ports: `4321` on `wsl`, `4323` on `wsl-laidon` (both distros may run at once).
+- Config is declarative at `/etc/journals/config.yaml`; do not edit it by hand.
+- Logs: `journalctl -u journals`; control: `sudo systemctl {status,restart} journals`.
+- After checking out or updating the submodule, run `make journals-deps`.
 
 ## Secrets
 

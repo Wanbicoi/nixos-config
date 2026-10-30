@@ -7,3 +7,6 @@
 [submodule "submodules/lazygit"]
 	path = submodules/lazygit
 	url = https://github.com/Wanbicoi/lazygit-config.git
+[submodule "submodules/journals"]
+	path = submodules/journals
+	url = https://github.com/Wanbicoi/journals.git

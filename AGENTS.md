@@ -13,10 +13,11 @@ Navigation only. `README.md` (layout, fresh setup), `hosts/README.md` and
 - `home/common/` — Home Manager modules for every user profile;
   `home/<user>/` — per-user identity (git name/email) and packages.
 - `secrets/` — encrypted values; read `secrets/README.md` before touching.
-- `submodules/` — `nvim` and `agent-config` checkouts, linked out-of-store into
-  `$HOME` by `home/common/submodules.nix` (`submodules.repoRoot`, set to
-  `/srv/nixconfig`). `~/.agents/skills`, `~/.pi/agent`, `~/.config/nvim` etc.
-  point into them, so those files belong to *other* repos.
+- `submodules/` — `nvim`, `agent-config`, `lazygit`, and `journals` checkouts.
+  Config submodules are linked out-of-store into `$HOME` by
+  `home/common/submodules.nix` (`submodules.repoRoot`, set to
+  `/srv/nixconfig`). `journals` is instead read by the system service in
+  `modules/nixos/journals.nix`; run `make journals-deps` after checkout.
 
 ## Flake outputs
 

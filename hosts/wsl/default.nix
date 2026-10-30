@@ -17,6 +17,7 @@
     ../../modules/nixos/wsl.nix
     ../../modules/nixos/llm-agents.nix
     ../../modules/nixos/herdr.nix
+    ../../modules/nixos/journals.nix
   ];
 
   networking.hostName = "nixos-wsl";
@@ -26,11 +27,16 @@
   wsl.defaultUser = "nixos";
 
   # The checkout lives outside the home (submodules.repoRoot in
-  # home/common/wsl.nix) and root re-evaluates it on every rebuild. With no
-  # other account on this distro, only nixos may read or write it.
+  # home/common/wsl.nix) and root re-evaluates it on every rebuild. Only nixos
+  # may write it; the journals system user reads it through the nixconfig
+  # group (see modules/nixos/journals.nix).
   systemd.tmpfiles.rules = [
-    "z /srv/nixconfig 0700 nixos users - -"
+    "z /srv/nixconfig 2750 nixos nixconfig - -"
   ];
+
+  # Personal distro port; wsl-laidon uses 4323 so both can run at once.
+  services.journals.enable = true;
+  services.journals.port = 4321;
 
   # `nixos-rebuild switch --flake .#wsl` evaluates the flake as root, and git
   # refuses any repo whose owner is not the current user. The per-user
