@@ -31,10 +31,10 @@
 
   networking.hostName = "wsl-laidon";
 
-  # Distinct from the personal distro in case both run concurrently (WSL may
-  # share one network namespace).
+  # Same port as the personal distro. If both distros run concurrently they may
+  # share a network namespace, so stop one service before starting the other.
   services.journals.enable = true;
-  services.journals.port = 4323;
+  services.journals.port = 4321;
 
   system.stateVersion = "26.05";
 

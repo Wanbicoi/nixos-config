@@ -235,7 +235,8 @@ The journals daemon runs as the `journals` system user on boot and owns
 shares one journal. The same `db_path` is used on both distros, but each
 distro has its own data; on `wsl-laidon` `nixos` and `troy` share one DB.
 
-- Ports: `4321` on `wsl`, `4323` on `wsl-laidon` (both distros may run at once).
+- Ports: `4321` on both hosts. If both WSL distros run at once they may share a
+  network namespace, so keep only one journals service running at a time.
 - Config is declarative at `/etc/journals/config.yaml`; do not edit it by hand.
 - Logs: `journalctl -u journals`; control: `sudo systemctl {status,restart} journals`.
 - After checking out or updating the submodule, run `make journals-deps` and

@@ -34,7 +34,8 @@
     "z /srv/nixconfig 2750 nixos nixconfig - -"
   ];
 
-  # Personal distro port; wsl-laidon uses 4323 so both can run at once.
+  # Both hosts use 4321; run at most one journals service at a time if the
+  # distros share a network namespace.
   services.journals.enable = true;
   services.journals.port = 4321;
 
