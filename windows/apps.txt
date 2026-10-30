@@ -7,23 +7,23 @@ Microsoft.WSL
 # Developer Tools
 Microsoft.VisualStudioCode
 Git.Git
-GitHub.cli
-GLab.GLab
-Python.Python.3.11
-Python.Launcher
-Postman.Postman
+# GitHub.cli
+# GLab.GLab
+# Python.Python.3.11
+# Python.Launcher
+# Postman.Postman
 hoppscotch.Hoppscotch
 SQLite.SQLite
 DBBrowserForSQLite.DBBrowserForSQLite
-Neovide.Neovide
+# Neovide.Neovide
 
 # Productivity & Notes
-Obsidian.Obsidian
-Logseq.Logseq
-Anki.Anki
+# Obsidian.Obsidian
+# Logseq.Logseq
+# Anki.Anki
 TheDocumentFoundation.LibreOffice
-Microsoft.Teams
-Microsoft.OneDrive
+# Microsoft.Teams
+# Microsoft.OneDrive
 
 # Utilities & System
 UniKey.UniKey
@@ -36,10 +36,10 @@ XPFFCG7M673D4F # SharpKeys (msstore)
 Logitech.OptionsPlus
 
 # Network & Remote
-OpenVPNTechnologies.OpenVPN
+# OpenVPNTechnologies.OpenVPN
 TeamViewer.TeamViewer
 
 # Media & Others
-Valve.Steam
-DigiDNA.iMazing
-StablyAI.Orca
+# Valve.Steam
+# DigiDNA.iMazing
+# StablyAI.Orca
