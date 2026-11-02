@@ -5,6 +5,24 @@
   # Identity (name/email) is per-user; see home/<user>/identity.nix.
   programs.git.enable = true;
 
+  # Authenticate github.com via `gh`, resolved from PATH at call time.
+  #
+  # Do NOT use `gh auth setup-git` and do NOT hardcode a /nix/store path here:
+  # gh's generated helper points at its own store path, so the next gh bump +
+  # GC leaves `~/.gitconfig` with a dangling helper and every push fails with
+  # "No such file or directory". The leading empty entry clears any helper
+  # inherited from lower-priority config files before ours is appended.
+  programs.git.settings.credential = {
+    "https://github.com".helper = [
+      ""
+      "!gh auth git-credential"
+    ];
+    "https://gist.github.com".helper = [
+      ""
+      "!gh auth git-credential"
+    ];
+  };
+
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
