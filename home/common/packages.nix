@@ -22,6 +22,7 @@
 
       # nodes
       pnpm
+      yarn
       bun
       nodejs
 
