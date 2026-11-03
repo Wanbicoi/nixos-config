@@ -5,7 +5,8 @@
   # Identity (name/email) is per-user; see home/<user>/identity.nix.
   programs.git.enable = true;
 
-  # Authenticate github.com via `gh`, resolved from PATH at call time.
+  # Authenticate github.com via `gh` and gitlab.simplemdg.com via `glab`,
+  # resolved from PATH at call time.
   #
   # Do NOT use `gh auth setup-git` and do NOT hardcode a /nix/store path here:
   # gh's generated helper points at its own store path, so the next gh bump +
@@ -20,6 +21,10 @@
     "https://gist.github.com".helper = [
       ""
       "!gh auth git-credential"
+    ];
+    "https://gitlab.simplemdg.com".helper = [
+      ""
+      "!glab auth git-credential"
     ];
   };
 
