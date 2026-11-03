@@ -43,15 +43,21 @@
       gh
       unzip
 
-      # playwright-cli on PATH, run through npx (no local packaging yet).
-      # Browser binaries are downloaded by the CLI itself (`playwright-cli
-      # install-browser chromium`); nix-ld supplies their runtime libraries, so
-      # no Chromium package is needed here.
+      # playwright-cli on PATH, run through pnpm dlx (no local packaging yet).
+      # Pinned: each CLI release bundles a playwright-core that expects one
+      # Chromium revision (0.1.22 -> 1247), so a floating version breaks the
+      # installed browser. To bump, pick the new version, then run
+      # `playwright-cli install-browser chromium` to fetch its revision.
+      # Browser binaries are downloaded by the CLI itself; nix-ld supplies
+      # their runtime libraries, so no Chromium package is needed here.
       (writeShellApplication {
         name = "playwright-cli";
-        runtimeInputs = [ nodejs ];
+        runtimeInputs = [
+          nodejs
+          pnpm
+        ];
         text = ''
-          exec npx --yes @playwright/cli@latest "$@"
+          exec pnpm dlx --package=@playwright/cli@0.1.22 playwright-cli "$@"
         '';
       })
 
