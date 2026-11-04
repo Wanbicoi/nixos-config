@@ -54,14 +54,16 @@ in
     # OpenCode: the whole global config dir.
     xdg.configFile."opencode".source = link "${agentConfig}/opencode";
 
-    # Claude Code: only the user-authored subset. ~/.claude/settings.json is left
-    # untouched because Orca rewrites it per machine (see
+    # Claude Code: only the user-authored subset. settings.json is linked
+    # out-of-store (writable) because Claude Code and Herdr write it; changes
+    # made from the UI therefore show up as a diff in this checkout (see
     # agent-config/claude/README.md). CLAUDE.md points at the canonical shared
     # AGENTS.md directly, avoiding a second hop through the in-repo symlink.
     home.file.".claude/CLAUDE.md".source = link "${agentConfig}/AGENTS.md";
     home.file.".claude/agents".source = link "${agentConfig}/claude/agents";
     home.file.".claude/commands".source = link "${agentConfig}/claude/commands";
     home.file.".claude/hooks/redact.py".source = link "${agentConfig}/claude/hooks/redact.py";
+    home.file.".claude/settings.json".source = link "${agentConfig}/claude/settings.json";
 
     # Antigravity CLI (agy): shares global skills and AGENTS.md instructions.
     # Global customizations reside in ~/.gemini/config/.
