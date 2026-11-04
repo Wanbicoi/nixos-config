@@ -14,6 +14,11 @@
     shellAliases = {
       vi = "nvim";
       vim = "nvim";
+
+      # Claude Code only emits OSC 8 hyperlinks when it recognises the
+      # terminal; Herdr's TERM_PROGRAM=herdr is not in that allowlist, so
+      # force hyperlinks on. Skip permission prompts for agent panes.
+      claude = "FORCE_HYPERLINK=1 claude --dangerously-skip-permissions";
     };
 
     # Export sops secrets as env vars for every shell (and apps launched
