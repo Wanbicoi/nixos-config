@@ -18,7 +18,9 @@
       # Nix LSP + formatter for the editor (nvim LSP / conform).
       nixd
 
+      # python3
       python3
+      uv
 
       # nodes
       pnpm
