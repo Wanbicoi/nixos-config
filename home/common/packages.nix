@@ -1,13 +1,13 @@
 # User-level packages for every machine.
 {
-  inputs,
   pkgs,
   ...
 }:
 
 {
-  home.packages =
-    (with pkgs; [
+  home.packages = (
+    with pkgs;
+    [
       # apps
       neovim
       tree-sitter
@@ -84,8 +84,6 @@
           exec pnpm dlx --package=@caveman-ai/cli cave "$@"
         '';
       })
-    ])
-    ++ [
-      inputs.tuicr.packages.${pkgs.stdenv.hostPlatform.system}.default
-    ];
+    ]
+  );
 }
