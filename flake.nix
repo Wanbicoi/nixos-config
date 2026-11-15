@@ -34,6 +34,16 @@
     # `nixpkgs.follows`, so binaries match the herdr.cachix.org cache.
     herdr-nix.url = "github:herdrdev/herdr-nix";
 
+    # Zalo has no official Linux client; this flake repackages the upstream
+    # macOS build as an AppImage and ships a `programs.zalo` Home Manager
+    # module. Its nixpkgs follows ours so the AppImage is wrapped with the
+    # same glibc/GTK stack as the rest of the system. It is the only Zalo
+    # source in nixpkgs, so updating it is `nix flake update zalo-for-linux`.
+    zalo-for-linux = {
+      url = "github:VN-Linux-Family/zalo-for-linux";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Declarative git pre-commit hooks.
     pre-commit-hooks = {
       url = "github:cachix/git-hooks.nix";
@@ -86,6 +96,7 @@
       nixosConfigurations = {
         wsl = mkNixos "wsl" system;
         wsl-laidon = mkNixos "wsl-laidon" system;
+        merry-laptop = mkNixos "merry-laptop" system;
 
         # Add more NixOS machines here, e.g.:
         # thinkbook = mkNixos "thinkbook" system;

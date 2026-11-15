@@ -13,8 +13,9 @@ One directory per machine. Each `default.nix`:
 thinkbook = mkNixos "thinkbook" "x86_64-linux";
 ```
 
-Then create `hosts/thinkbook/default.nix` (copy `hosts/wsl/default.nix`,
-swap `nixos-wsl` modules for `nixos-hardware`/a hardware-configuration.nix).
+Then create `hosts/thinkbook/default.nix` (copy `hosts/merry-laptop/default.nix`
+for a desktop machine: generated `hardware-configuration.nix` import, plasma6,
+and a user's Home Manager profile).
 
 ## WSL: personal vs company-first distro
 
