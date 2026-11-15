@@ -157,6 +157,10 @@ world-readable.
   (`openconnect`, not Cisco Secure Client). Test the gateway once with
   `sudo openconnect --user=… --authgroup=… vpn.company.com`; if the server
   insists on posture/host-scan or Umbrella, it cannot be replaced on NixOS.
+- **Remote admin**: `sudo tailscale up` once (paste the login URL), then
+  `ssh nixos@merry-laptop` from any device in the tailnet. Port 22 is closed on
+  the physical interfaces on purpose, so this works on any Wi-Fi without
+  exposing sshd.
 
 ## 7. opencode after the switch (admin)
 
@@ -214,6 +218,7 @@ nix flake update zalo-for-linux      # Zalo releases independently of nixpkgs
 | rebuild warns about the placeholder root | hardware config missing or untracked (step 4) |
 | merry can't log in at SDDM | `sudo passwd merry` not run (step 5) |
 | opencode run hangs on sudo | run `sudo -v` first; the timestamp expires after ~5 minutes |
+| `ssh: connect to host merry-laptop port 22: refused` from the LAN | expected: port 22 is only open on `tailscale0`, use the tailnet name/IP |
 | `opencode: unrecognised flag --auto` during bootstrap | that is the v1 binary; use `--dangerously-skip-permissions` (step 4) |
 | Bluetooth pairing asks for an admin password | BlueZ polkit policy; add a scoped `security.polkit` rule rather than putting merry in `wheel` |
 | installer created a user other than `nixos` | `id -u`; if that user holds uid 1000, remove it before switching or swap the uids in the host |

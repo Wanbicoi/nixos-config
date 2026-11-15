@@ -137,6 +137,22 @@
       # from the systemPackages above.
       networking.networkmanager.plugins = [ pkgs.networkmanager-openconnect ];
 
+      # Remote admin access without exposing SSH on whatever Wi-Fi the laptop
+      # joins: sshd still binds every interface, but the firewall accepts port
+      # 22 only on tailscale0, so it is reachable exclusively from the tailnet.
+      # `nixos` authenticates with the password set after the first switch.
+      # Run `sudo tailscale up` once to join the tailnet.
+      services.tailscale.enable = true;
+      services.openssh = {
+        enable = true;
+        openFirewall = false;
+        settings = {
+          PasswordAuthentication = true;
+          PermitRootLogin = "no";
+        };
+      };
+      networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 22 ];
+
       time.timeZone = "Asia/Ho_Chi_Minh";
       i18n.defaultLocale = "en_US.UTF-8";
 
