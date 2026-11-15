@@ -31,9 +31,23 @@
   config =
     let
       missingHardwareConfig = !(builtins.pathExists ./hardware-configuration.nix);
+
+      # Only opencode from llm-agents.nix, not the full agent set WSL imports:
+      # this is merry's machine. The input packages v2 as `opencode2`; the
+      # wrapper exposes it under the normal command name, because running v1
+      # and v2 side by side collides in ~/.local/share/opencode (see
+      # modules/nixos/llm-agents.nix).
+      llm = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
     in
     {
       networking.hostName = "merry-laptop";
+
+      environment.systemPackages = [
+        (pkgs.runCommand "opencode-v2-symlink" { } ''
+          mkdir -p $out/bin
+          ln -s ${llm.opencode2}/bin/opencode2 $out/bin/opencode
+        '')
+      ];
 
       system.stateVersion = "26.05";
 

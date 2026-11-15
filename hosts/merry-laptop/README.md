@@ -112,7 +112,43 @@ world-readable.
   NixOS lets only `wheel` edit CUPS queues. CUPS matches the USB device to
   `brl2320d.ppd` automatically; printing then works for merry too.
 
-## 8. Updates
+## 8. opencode (admin)
+
+The host installs just the opencode v2 binary from `llm-agents`, system-wide
+(not the full agent set the WSL hosts import). `llm-agents` packages v2 as
+`opencode2`, so it is exposed under the plain `opencode` name; v1 and v2 share
+`~/.local/share/opencode` and must not run side by side.
+
+Credentials are **per user** and stored in opencode's SQLite database, never in
+this repo.
+
+```bash
+opencode --version                              # v2, prebuilt from the Numtide cache
+opencode auth login opencode --method key       # Console / Zen (pay-as-you-go)
+# or, for a Go subscription:
+opencode auth login opencode-go --method key
+opencode auth list
+```
+
+API-key entry is interactive on purpose: v2 has no `--api-key` flag, so paste
+the key at the prompt. Then either open the TUI (`opencode`) or let it work
+non-interactively:
+
+```bash
+cd ~/nixconfig
+opencode run "Check this host with nix flake check and list what is still
+missing before the first boot"
+```
+
+If `run` reports no model, select one in the TUI (`/models`) or pass it
+explicitly with `--model opencode/<model-id>` (`opencode models` lists them).
+
+Useful afterwards: `opencode debug paths db` (where the credentials live),
+`opencode auth logout` (remove an account), and
+`opencode auth export`/`import` to move credentials between machines — that
+file contains secrets, treat it like a private key.
+
+## 9. Updates
 
 ```bash
 cd ~/nixconfig
