@@ -1,8 +1,8 @@
-# merry-laptop — first install
+# meri-laptop — first install
 
 Bootstrap from a stock NixOS install to this flake. Written for the person
 installing the machine, not for a running daily driver: once
-`nixos-rebuild switch --flake .#merry-laptop` has run once, use the root
+`nixos-rebuild switch --flake .#meri-laptop` has run once, use the root
 [`README.md`](../../README.md) instead.
 
 Two repo-specific facts drive the order:
@@ -20,12 +20,12 @@ ground truth and as the fallback.
 ## 0. Pick the installer user: `nixos`
 
 The first user created by the installer gets uid 1000, which is what
-`hosts/merry-laptop/default.nix` declares for `nixos`. Use exactly that
+`hosts/meri-laptop/default.nix` declares for `nixos`. Use exactly that
 username.
 
-Do **not** create `merry` in the installer: the config declares `merry` as uid
-1001 and `nixos` as 1000, so an installer-created `merry` at 1000 collides.
-`merry` is created by the config; her password is set after the first switch.
+Do **not** create `meri` in the installer: the config declares `meri` as uid
+1001 and `nixos` as 1000, so an installer-created `meri` at 1000 collides.
+`meri` is created by the config; her password is set after the first switch.
 
 ## 1. Install NixOS
 
@@ -60,7 +60,7 @@ cd ~/nixconfig
 opencode auth login --provider opencode --method key   # Console / Zen
 ```
 
-`--recurse-submodules` is not needed for this host: `home/merry` does not
+`--recurse-submodules` is not needed for this host: `home/meri` does not
 import `home/common`, so the nvim/agent/journals submodules are never
 evaluated.
 
@@ -72,13 +72,13 @@ subscription use `--provider opencode-go`. Verify with `opencode auth list`.
 ```bash
 sudo -v
 opencode run --dangerously-skip-permissions \
-  --title "merry-laptop first switch" \
-  "Execute steps 4 and 5 of hosts/merry-laptop/README.md on this machine. Copy
-   /etc/nixos/hardware-configuration.nix into hosts/merry-laptop/, chown it to
+  --title "meri-laptop first switch" \
+  "Execute steps 4 and 5 of hosts/meri-laptop/README.md on this machine. Copy
+   /etc/nixos/hardware-configuration.nix into hosts/meri-laptop/, chown it to
    the current user, git add and commit it, then run
-   'sudo -v && sudo nixos-rebuild switch --flake .#merry-laptop'. Use that exact
+   'sudo -v && sudo nixos-rebuild switch --flake .#meri-laptop'. Use that exact
    generated file — never write a hardware configuration yourself. Only modify
-   hosts/merry-laptop/. Stop on the first error and print it."
+   hosts/meri-laptop/. Stop on the first error and print it."
 ```
 
 - `sudo -v` first: sudo cannot prompt inside an agent-run command. The cached
@@ -86,7 +86,7 @@ opencode run --dangerously-skip-permissions \
   command inside the prompt.
 - `--dangerously-skip-permissions` is v1's auto-approve (v2 spells it
   `--auto`). Combined with the cached sudo it is effectively unattended root,
-  so keep the prompt scoped to `hosts/merry-laptop/` and do not widen it to
+  so keep the prompt scoped to `hosts/meri-laptop/` and do not widen it to
   "fix whatever is needed".
 - It cannot do step 5 or the GUI parts of step 6: `passwd` prompts, the printer
   queue, fcitx5 setup and the SDDM login need a human.
@@ -104,11 +104,11 @@ git log --oneline -2       # did it commit the hardware file?
 ### Manual equivalent
 
 ```bash
-sudo cp /etc/nixos/hardware-configuration.nix ~/nixconfig/hosts/merry-laptop/
-sudo chown "$USER" ~/nixconfig/hosts/merry-laptop/hardware-configuration.nix
+sudo cp /etc/nixos/hardware-configuration.nix ~/nixconfig/hosts/meri-laptop/
+sudo chown "$USER" ~/nixconfig/hosts/meri-laptop/hardware-configuration.nix
 cd ~/nixconfig
-git add hosts/merry-laptop/hardware-configuration.nix
-git commit -m "feat(merry-laptop): add generated hardware configuration"
+git add hosts/meri-laptop/hardware-configuration.nix
+git commit -m "feat(meri-laptop): add generated hardware configuration"
 ```
 
 `git add` is required: flakes evaluate the Git tree, not the working
@@ -119,7 +119,7 @@ Check the file: `fileSystems."/"`, `fileSystems."/boot"`, and the
 `hardware.cpu.*.updateMicrocode` line.
 
 ```bash
-sudo nixos-rebuild switch --flake .#merry-laptop
+sudo nixos-rebuild switch --flake .#meri-laptop
 ```
 
 Not `make switch` yet — the hostname is still `nixos`. The build installs KDE
@@ -132,7 +132,7 @@ keeping it is harmless.
 ## 5. Passwords, then reboot
 
 ```bash
-sudo passwd merry    # locked until this exists; SDDM login fails without it
+sudo passwd meri    # locked until this exists; SDDM login fails without it
 sudo passwd nixos
 sudo reboot
 ```
@@ -140,7 +140,7 @@ sudo reboot
 No password hash is stored in the repo on purpose — `/nix/store` is
 world-readable.
 
-## 6. First-login checks (as merry)
+## 6. First-login checks (as meri)
 
 - **Session**: Plasma (Wayland). `services.displayManager.defaultSession =
   "plasma"`; the X11 session is the fallback.
@@ -152,13 +152,13 @@ world-readable.
   build); log in by scanning the QR code.
 - **Printer (Brother HL-L2320D)**: add the queue from an **nixos** session —
   NixOS lets only `wheel` edit CUPS queues. CUPS matches the USB device to
-  `brl2320d.ppd` automatically; printing then works for merry too.
+  `brl2320d.ppd` automatically; printing then works for meri too.
 - **VPN**: System Settings → Connections → Add → Cisco AnyConnect
   (`openconnect`, not Cisco Secure Client). Test the gateway once with
   `sudo openconnect --user=… --authgroup=… vpn.company.com`; if the server
   insists on posture/host-scan or Umbrella, it cannot be replaced on NixOS.
 - **Remote admin**: `sudo tailscale up` once (paste the login URL), then
-  `ssh nixos@merry-laptop` from any device in the tailnet. Port 22 is closed on
+  `ssh nixos@meri-laptop` from any device in the tailnet. Port 22 is closed on
   the physical interfaces on purpose, so this works on any Wi-Fi without
   exposing sshd.
 
@@ -206,7 +206,7 @@ file contains secrets, treat it like a private key.
 ```bash
 cd ~/nixconfig
 git pull
-make switch                          # hostname is merry-laptop by now
+make switch                          # hostname is meri-laptop by now
 nix flake update zalo-for-linux      # Zalo releases independently of nixpkgs
 ```
 
@@ -214,11 +214,11 @@ nix flake update zalo-for-linux      # Zalo releases independently of nixpkgs
 
 | Symptom | Cause |
 | --- | --- |
-| `error: Path 'hosts/merry-laptop' is not tracked by Git` | hardware file not `git add`ed (step 4) |
+| `error: Path 'hosts/meri-laptop' is not tracked by Git` | hardware file not `git add`ed (step 4) |
 | rebuild warns about the placeholder root | hardware config missing or untracked (step 4) |
-| merry can't log in at SDDM | `sudo passwd merry` not run (step 5) |
+| meri can't log in at SDDM | `sudo passwd meri` not run (step 5) |
 | opencode run hangs on sudo | run `sudo -v` first; the timestamp expires after ~5 minutes |
-| `ssh: connect to host merry-laptop port 22: refused` from the LAN | expected: port 22 is only open on `tailscale0`, use the tailnet name/IP |
+| `ssh: connect to host meri-laptop port 22: refused` from the LAN | expected: port 22 is only open on `tailscale0`, use the tailnet name/IP |
 | `opencode: unrecognised flag --auto` during bootstrap | that is the v1 binary; use `--dangerously-skip-permissions` (step 4) |
-| Bluetooth pairing asks for an admin password | BlueZ polkit policy; add a scoped `security.polkit` rule rather than putting merry in `wheel` |
+| Bluetooth pairing asks for an admin password | BlueZ polkit policy; add a scoped `security.polkit` rule rather than putting meri in `wheel` |
 | installer created a user other than `nixos` | `id -u`; if that user holds uid 1000, remove it before switching or swap the uids in the host |

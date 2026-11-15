@@ -1,8 +1,8 @@
-# Host: merry-laptop — merry's personal laptop (native NixOS, not WSL).
+# Host: meri-laptop — meri's personal laptop (native NixOS, not WSL).
 #
 # Two accounts, matching the WSL hosts' split: `nixos` is the admin (wheel,
-# runs `nixos-rebuild`, no desktop profile) and `merry` is the everyday user
-# who owns the KDE session. merry is deliberately *not* in wheel: she never
+# runs `nixos-rebuild`, no desktop profile) and `meri` is the everyday user
+# who owns the KDE session. meri is deliberately *not* in wheel: she never
 # needs sudo to use the machine, and the admin account stays the only way to
 # change the system.
 {
@@ -33,14 +33,14 @@
       missingHardwareConfig = !(builtins.pathExists ./hardware-configuration.nix);
 
       # Only opencode from llm-agents.nix, not the full agent set WSL imports:
-      # this is merry's machine. The input packages v2 as `opencode2`; the
+      # this is meri's machine. The input packages v2 as `opencode2`; the
       # wrapper exposes it under the normal command name, because running v1
       # and v2 side by side collides in ~/.local/share/opencode (see
       # modules/nixos/llm-agents.nix).
       llm = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
     in
     {
-      networking.hostName = "merry-laptop";
+      networking.hostName = "meri-laptop";
 
       environment.systemPackages = [
         (pkgs.runCommand "opencode-v2-symlink" { } ''
@@ -62,7 +62,7 @@
       # installer's default root label. Switching with this fallback still
       # active produces a machine that cannot mount /, hence the warning.
       warnings = lib.optional missingHardwareConfig ''
-        hosts/merry-laptop: hardware-configuration.nix is missing, so a
+        hosts/meri-laptop: hardware-configuration.nix is missing, so a
         /dev/disk/by-label/nixos placeholder root is used. Copy the file that
         `nixos-generate-config` wrote to /etc/nixos/ into this host directory
         before switching.
@@ -181,7 +181,7 @@
         shell = pkgs.zsh;
       };
 
-      users.users.merry = {
+      users.users.meri = {
         isNormalUser = true;
         uid = 1001;
         extraGroups = [
@@ -193,11 +193,11 @@
       };
 
       # No initial passwords are declared: the accounts start locked and are
-      # set on the first switch with `sudo passwd nixos` / `sudo passwd merry`
+      # set on the first switch with `sudo passwd nixos` / `sudo passwd meri`
       # (users.mutableUsers is on by default). A hashed password in the store
       # would be world-readable and wrong to share.
       #
-      # Only merry gets a Home Manager profile. home/nixos pulls in the
+      # Only meri gets a Home Manager profile. home/nixos pulls in the
       # personal sops secrets and WSL-only tooling, neither of which belongs on
       # this machine, so the admin account stays a bare system account.
       home-manager = {
@@ -206,7 +206,7 @@
         extraSpecialArgs = { inherit inputs; };
         backupFileExtension = "hm-backup";
 
-        users.merry.imports = [ ../../home/merry ];
+        users.meri.imports = [ ../../home/meri ];
       };
     };
 }

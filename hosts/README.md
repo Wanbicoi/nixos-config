@@ -13,7 +13,7 @@ One directory per machine. Each `default.nix`:
 thinkbook = mkNixos "thinkbook" "x86_64-linux";
 ```
 
-Then create `hosts/thinkbook/default.nix` (copy `hosts/merry-laptop/default.nix`
+Then create `hosts/thinkbook/default.nix` (copy `hosts/meri-laptop/default.nix`
 for a desktop machine: generated `hardware-configuration.nix` import, plasma6,
 and a user's Home Manager profile).
 

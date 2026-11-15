@@ -1,4 +1,4 @@
-# Home Manager entrypoint for user `merry` (merry-laptop).
+# Home Manager entrypoint for user `meri` (meri-laptop).
 #
 # Deliberately does not import ../common: that profile is the developer setup
 # (neovim, agent configs, journals, rust/go toolchains), which would only

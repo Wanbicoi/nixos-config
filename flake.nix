@@ -96,7 +96,7 @@
       nixosConfigurations = {
         wsl = mkNixos "wsl" system;
         wsl-laidon = mkNixos "wsl-laidon" system;
-        merry-laptop = mkNixos "merry-laptop" system;
+        meri-laptop = mkNixos "meri-laptop" system;
 
         # Add more NixOS machines here, e.g.:
         # thinkbook = mkNixos "thinkbook" system;

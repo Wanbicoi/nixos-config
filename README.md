@@ -11,7 +11,7 @@ Declarative configuration for my machines — NixOS laptops, NixOS-WSL, and
 | `hosts/<name>/` | One directory per machine: hostname, platform modules, users. |
 | `modules/nixos/` | NixOS system modules shared by all machines. |
 | `modules/darwin/` | nix-darwin modules (placeholder). |
-| `home/common/` | Home Manager modules shared by the developer profiles (`wsl`, `wsl-laidon`); `home/merry` keeps its own minimal desktop profile. |
+| `home/common/` | Home Manager modules shared by the developer profiles (`wsl`, `wsl-laidon`); `home/meri` keeps its own minimal desktop profile. |
 | `home/<user>/` | Per-user identity and user-specific packages. |
 | `submodules/` | Config checkouts (`nvim`, `agent-config`, `lazygit`) plus the `journals` source used by its system service. |
 | `secrets/` | Age-encrypted secrets, decrypted at activation by sops-nix. See [`secrets/README.md`](secrets/README.md). |
@@ -22,7 +22,7 @@ Declarative configuration for my machines — NixOS laptops, NixOS-WSL, and
 | --- | --- | --- |
 | `wsl` | NixOS-WSL | personal distro; `nixos` is the only account (default user and admin) |
 | `wsl-laidon` | NixOS-WSL | company-first distro; default user `troy` (no sudo), admin `nixos` via `wsl.exe -u nixos` |
-| `merry-laptop` | NixOS (native laptop) | merry's daily driver: Plasma 6 (Wayland), Chrome/Edge/Zalo/WPS, fcitx5 Bamboo; admin `nixos` |
+| `meri-laptop` | NixOS (native laptop) | meri's daily driver: Plasma 6 (Wayland), Chrome/Edge/Zalo/WPS, fcitx5 Bamboo; admin `nixos` |
 
 ## Fresh setup
 
@@ -261,7 +261,7 @@ wiring it into Home Manager, and rekeying.
 
 - **NixOS:** create `hosts/<name>/default.nix`, then add
   `nixosConfigurations.<name> = mkNixos "<name>" "x86_64-linux";` to `flake.nix`.
-  See `hosts/README.md`, and `hosts/merry-laptop/default.nix` for a complete
+  See `hosts/README.md`, and `hosts/meri-laptop/default.nix` for a complete
   desktop host (Plasma 6, two accounts, printing, Vietnamese input).
 - **macOS:** uncomment the `nix-darwin` input and follow
   `modules/darwin/README.md`.

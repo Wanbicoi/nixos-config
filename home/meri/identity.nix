@@ -5,7 +5,7 @@
   programs.home-manager.enable = true;
 
   home = {
-    username = "merry";
-    homeDirectory = "/home/merry";
+    username = "meri";
+    homeDirectory = "/home/meri";
   };
 }

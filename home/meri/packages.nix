@@ -1,4 +1,4 @@
-# Everyday user packages for `merry`.
+# Everyday user packages for `meri`.
 #
 # Plasma 6 already installs the KDE application set (Dolphin, Konsole, Kate,
 # Okular, Gwenview, Ark, Spectacle, ...), so only the extras are listed here.
@@ -6,7 +6,7 @@
 
 {
   home.packages = with pkgs; [
-    # Unfree; scoped by the predicate in hosts/merry-laptop/default.nix.
+    # Unfree; scoped by the predicate in hosts/meri-laptop/default.nix.
     google-chrome
     microsoft-edge
     wpsoffice
