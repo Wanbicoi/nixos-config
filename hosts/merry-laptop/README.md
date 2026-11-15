@@ -111,6 +111,10 @@ world-readable.
 - **Printer (Brother HL-L2320D)**: add the queue from an **nixos** session —
   NixOS lets only `wheel` edit CUPS queues. CUPS matches the USB device to
   `brl2320d.ppd` automatically; printing then works for merry too.
+- **VPN**: System Settings → Connections → Add → Cisco AnyConnect
+  (`openconnect`, not Cisco Secure Client). Test the gateway once with
+  `sudo openconnect --user=… --authgroup=… vpn.company.com`; if the server
+  insists on posture/host-scan or Umbrella, it cannot be replaced on NixOS.
 
 ## 8. opencode (admin)
 

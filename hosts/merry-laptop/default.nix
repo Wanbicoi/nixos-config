@@ -47,6 +47,13 @@
           mkdir -p $out/bin
           ln -s ${llm.opencode2}/bin/opencode2 $out/bin/opencode
         '')
+
+        # AnyConnect-compatible VPN client. The official Cisco Secure Client
+        # has no nixpkgs package and its posture/Umbrella modules cannot be
+        # reproduced; openconnect speaks the same protocol for the VPN part.
+        # Kept on PATH as the diagnostic path, since the NetworkManager plugin
+        # gives no useful errors when a gateway rejects the client.
+        pkgs.openconnect
       ];
 
       system.stateVersion = "26.05";
@@ -124,6 +131,11 @@
       };
 
       networking.networkmanager.enable = true;
+
+      # KDE's Connections editor and the tray applet only offer "Cisco
+      # AnyConnect" once the plugin is registered; it shells out to openconnect
+      # from the systemPackages above.
+      networking.networkmanager.plugins = [ pkgs.networkmanager-openconnect ];
 
       time.timeZone = "Asia/Ho_Chi_Minh";
       i18n.defaultLocale = "en_US.UTF-8";
