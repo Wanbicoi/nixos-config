@@ -14,6 +14,9 @@ Two repo-specific facts drive the order:
   `nixos` until the first switch, so that first switch must name the attribute
   explicitly.
 
+Steps 4–5 can be driven by opencode; the manual commands are kept as the
+ground truth and as the fallback.
+
 ## 0. Pick the installer user: `nixos`
 
 The first user created by the installer gets uid 1000, which is what
@@ -32,31 +35,73 @@ It writes `/etc/nixos/configuration.nix` and
 
 Log in as `nixos` after the reboot.
 
-## 2. Enable flakes once
+## 2. Enable flakes, git and a bootstrap opencode
 
 In `/etc/nixos/configuration.nix`, inside the top-level block:
 
 ```nix
 nix.settings.experimental-features = [ "nix-command" "flakes" ];
-environment.systemPackages = with pkgs; [ git ];
+environment.systemPackages = with pkgs; [ git opencode ];
 ```
 
 ```bash
 sudo nixos-rebuild switch
 ```
 
-## 3. Clone the checkout
+This is a bootstrap only: `/etc/nixos` is discarded once the flake takes over,
+and the host then installs opencode **v2** itself (step 7). The nixpkgs
+`opencode` here is **v1**; its command flags differ from v2, see step 7.
+
+## 3. Clone and authenticate
 
 ```bash
 git clone https://github.com/Wanbicoi/nixos-config ~/nixconfig
 cd ~/nixconfig
+opencode auth login --provider opencode --method key   # Console / Zen
 ```
 
 `--recurse-submodules` is not needed for this host: `home/merry` does not
 import `home/common`, so the nvim/agent/journals submodules are never
 evaluated.
 
-## 4. Move the generated hardware config in
+API-key entry is interactive; paste the key at the prompt. For a Go
+subscription use `--provider opencode-go`. Verify with `opencode auth list`.
+
+## 4. Hand the first switch to opencode
+
+```bash
+sudo -v
+opencode run --dangerously-skip-permissions \
+  --title "merry-laptop first switch" \
+  "Execute steps 4 and 5 of hosts/merry-laptop/README.md on this machine. Copy
+   /etc/nixos/hardware-configuration.nix into hosts/merry-laptop/, chown it to
+   the current user, git add and commit it, then run
+   'sudo -v && sudo nixos-rebuild switch --flake .#merry-laptop'. Use that exact
+   generated file — never write a hardware configuration yourself. Only modify
+   hosts/merry-laptop/. Stop on the first error and print it."
+```
+
+- `sudo -v` first: sudo cannot prompt inside an agent-run command. The cached
+  timestamp lasts ~5 minutes, hence `sudo -v && sudo nixos-rebuild` in one
+  command inside the prompt.
+- `--dangerously-skip-permissions` is v1's auto-approve (v2 spells it
+  `--auto`). Combined with the cached sudo it is effectively unattended root,
+  so keep the prompt scoped to `hosts/merry-laptop/` and do not widen it to
+  "fix whatever is needed".
+- It cannot do step 5 or the GUI parts of step 6: `passwd` prompts, the printer
+  queue, fcitx5 setup and the SDDM login need a human.
+- If it reports no model, run `opencode models` and add
+  `-m <provider>/<model>`.
+
+Keep the transcript if the build fails:
+
+```bash
+opencode run ... 2>&1 | tee /tmp/bootstrap.log
+echo $?                    # non-zero = it stopped
+git log --oneline -2       # did it commit the hardware file?
+```
+
+### Manual equivalent
 
 ```bash
 sudo cp /etc/nixos/hardware-configuration.nix ~/nixconfig/hosts/merry-laptop/
@@ -73,10 +118,7 @@ active.
 Check the file: `fileSystems."/"`, `fileSystems."/boot"`, and the
 `hardware.cpu.*.updateMicrocode` line.
 
-## 5. First switch
-
 ```bash
-cd ~/nixconfig
 sudo nixos-rebuild switch --flake .#merry-laptop
 ```
 
@@ -87,7 +129,7 @@ expect 15–30 minutes.
 `/etc/nixos/*` stays behind and is no longer used once the flake takes over;
 keeping it is harmless.
 
-## 6. Passwords, then reboot
+## 5. Passwords, then reboot
 
 ```bash
 sudo passwd merry    # locked until this exists; SDDM login fails without it
@@ -98,7 +140,7 @@ sudo reboot
 No password hash is stored in the repo on purpose — `/nix/store` is
 world-readable.
 
-## 7. First-login checks (as merry)
+## 6. First-login checks (as merry)
 
 - **Session**: Plasma (Wayland). `services.displayManager.defaultSession =
   "plasma"`; the X11 session is the fallback.
@@ -116,12 +158,14 @@ world-readable.
   `sudo openconnect --user=… --authgroup=… vpn.company.com`; if the server
   insists on posture/host-scan or Umbrella, it cannot be replaced on NixOS.
 
-## 8. opencode (admin)
+## 7. opencode after the switch (admin)
 
 The host installs just the opencode v2 binary from `llm-agents`, system-wide
 (not the full agent set the WSL hosts import). `llm-agents` packages v2 as
 `opencode2`, so it is exposed under the plain `opencode` name; v1 and v2 share
-`~/.local/share/opencode` and must not run side by side.
+`~/.local/share/opencode` and must not run side by side. v2 imports the
+bootstrap v1 `auth.json` on first start, so the key from step 3 normally
+carries over.
 
 Credentials are **per user** and stored in opencode's SQLite database, never in
 this repo.
@@ -134,14 +178,15 @@ opencode auth login opencode-go --method key
 opencode auth list
 ```
 
-API-key entry is interactive on purpose: v2 has no `--api-key` flag, so paste
-the key at the prompt. Then either open the TUI (`opencode`) or let it work
-non-interactively:
+Note the v1 → v2 syntax change: v1 used `--provider`/`--method`, v2 takes the
+provider as a positional argument. For `run`, v1's
+`--dangerously-skip-permissions` is v2's `--auto`. Then either open the TUI
+(`opencode`) or let it work non-interactively:
 
 ```bash
 cd ~/nixconfig
-opencode run "Check this host with nix flake check and list what is still
-missing before the first boot"
+opencode run --auto "Check this host with nix flake check and list what is
+still missing"
 ```
 
 If `run` reports no model, select one in the TUI (`/models`) or pass it
@@ -152,7 +197,7 @@ Useful afterwards: `opencode debug paths db` (where the credentials live),
 `opencode auth export`/`import` to move credentials between machines — that
 file contains secrets, treat it like a private key.
 
-## 9. Updates
+## 8. Updates
 
 ```bash
 cd ~/nixconfig
@@ -165,8 +210,10 @@ nix flake update zalo-for-linux      # Zalo releases independently of nixpkgs
 
 | Symptom | Cause |
 | --- | --- |
-| `error: Path 'hosts/merry-laptop' is not tracked by Git` | step 4 `git add` skipped |
+| `error: Path 'hosts/merry-laptop' is not tracked by Git` | hardware file not `git add`ed (step 4) |
 | rebuild warns about the placeholder root | hardware config missing or untracked (step 4) |
-| merry can't log in at SDDM | `sudo passwd merry` not run (step 6) |
+| merry can't log in at SDDM | `sudo passwd merry` not run (step 5) |
+| opencode run hangs on sudo | run `sudo -v` first; the timestamp expires after ~5 minutes |
+| `opencode: unrecognised flag --auto` during bootstrap | that is the v1 binary; use `--dangerously-skip-permissions` (step 4) |
 | Bluetooth pairing asks for an admin password | BlueZ polkit policy; add a scoped `security.polkit` rule rather than putting merry in `wheel` |
 | installer created a user other than `nixos` | `id -u`; if that user holds uid 1000, remove it before switching or swap the uids in the host |
