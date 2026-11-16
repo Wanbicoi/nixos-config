@@ -59,13 +59,18 @@
     shell = pkgs.zsh;
   };
 
-  # One Home Manager profile; company profiles are imported by wsl-laidon.
+  # One Home Manager profile, plus the WSL-only user tooling (wsl-open, the
+  # Windows notify bridge, /srv/nixconfig as repo root; see
+  # home/common/wsl.nix). A native NixOS host imports only home/nixos.
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
     extraSpecialArgs = { inherit inputs; };
     backupFileExtension = "hm-backup";
 
-    users.nixos.imports = [ ../../home/nixos ];
+    users.nixos.imports = [
+      ../../home/nixos
+      ../../home/common/wsl.nix
+    ];
   };
 }

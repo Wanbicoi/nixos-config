@@ -131,7 +131,13 @@
     extraSpecialArgs = { inherit inputs; };
     backupFileExtension = "hm-backup";
 
-    users.nixos.imports = [ ../../home/nixos ];
-    users.troy.imports = [ ../../home/troy ];
+    users.nixos.imports = [
+      ../../home/nixos
+      ../../home/common/wsl.nix
+    ];
+    users.troy.imports = [
+      ../../home/troy
+      ../../home/common/wsl.nix
+    ];
   };
 }
