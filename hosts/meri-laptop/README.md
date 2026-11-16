@@ -12,10 +12,18 @@ Two repo-specific facts drive the order:
   silently falls back to a `/dev/disk/by-label/nixos` root;
 - `make switch` derives the host attribute from `hostname`, which is still
   `nixos` until the first switch, so that first switch must name the attribute
-  explicitly.
+  explicitly;
+- the `nixos` account now runs the same profile as the WSL distros, so the
+  checkout must be at `/srv/nixconfig` with its submodules and a personal sops
+  key in place **before** the first switch (step 3), or `home-manager-nixos`
+  fails and aborts the rebuild.
 
 Steps 4–5 can be driven by opencode; the manual commands are kept as the
 ground truth and as the fallback.
+
+**Already running this flake?** Skip to step 3 for the checkout/key preparation
+and then `git pull && make switch` — the rest of the guide is for a stock
+install.
 
 ## 0. Pick the installer user: `nixos`
 
@@ -52,17 +60,42 @@ This is a bootstrap only: `/etc/nixos` is discarded once the flake takes over,
 and the host then installs opencode **v2** itself (step 7). The nixpkgs
 `opencode` here is **v1**; its command flags differ from v2, see step 7.
 
-## 3. Clone and authenticate
+## 3. Clone, then prepare the shared checkout
+
+The `nixos` account runs the same Home Manager profile as the WSL distros, so
+the checkout lives at `/srv/nixconfig` there too: the profile links the
+nvim/agent submodules out of it, and the journals daemon reads it as a system
+user through the `nixconfig` group.
 
 ```bash
-git clone https://github.com/Wanbicoi/nixos-config ~/nixconfig
-cd ~/nixconfig
-opencode auth login --provider opencode --method key   # Console / Zen
+git clone --recurse-submodules https://github.com/Wanbicoi/nixos-config ~/nixconfig
+sudo mv ~/nixconfig /srv/nixconfig
+sudo chown -R nixos:nixos /srv/nixconfig   # the nixconfig group exists after the first switch
+cd /srv/nixconfig
+# bun is not installed until the first switch, so borrow it from nixpkgs.
+nix shell nixpkgs#bun -c make journals-deps
+
+# Personal sops key: the same age key as the WSL distro, restored from backup.
+# Without it home-manager-nixos fails during activation and aborts the switch.
+install -d -m 700 ~/.config/sops/age
+cp /path/to/keys.txt ~/.config/sops/age/keys.txt
+chmod 400 ~/.config/sops/age/keys.txt
 ```
 
-`--recurse-submodules` is not needed for this host: `home/meri` does not
-import `home/common`, so the nvim/agent/journals submodules are never
-evaluated.
+`--recurse-submodules` is required now: `home/nixos` imports `home/common`,
+which links `submodules/nvim`, `submodules/agent-config` and
+`submodules/lazygit` into `~/.config`, and `submodules/journals` is the
+daemon's source tree. `make journals-deps` must also run before the first
+switch, or the `journals` unit fails its `ExecStartPre` (the switch still
+succeeds; journals stays down until the deps exist).
+
+Then authenticate the bootstrap opencode (v1; the v2 installed by the switch
+imports its `auth.json` on first start):
+
+```bash
+cd /srv/nixconfig
+opencode auth login --provider opencode --method key   # Console / Zen
+```
 
 API-key entry is interactive; paste the key at the prompt. For a Go
 subscription use `--provider opencode-go`. Verify with `opencode auth list`.
@@ -76,9 +109,10 @@ opencode run --dangerously-skip-permissions \
   "Execute steps 4 and 5 of hosts/meri-laptop/README.md on this machine. Copy
    /etc/nixos/hardware-configuration.nix into hosts/meri-laptop/, chown it to
    the current user, git add and commit it, then run
-   'sudo -v && sudo nixos-rebuild switch --flake .#meri-laptop'. Use that exact
-   generated file — never write a hardware configuration yourself. Only modify
-   hosts/meri-laptop/. Stop on the first error and print it."
+   'sudo -v && sudo nixos-rebuild switch --flake /srv/nixconfig#meri-laptop'.
+   Use that exact generated file — never write a hardware configuration
+   yourself. Only modify hosts/meri-laptop/. Stop on the first error and print
+   it."
 ```
 
 - `sudo -v` first: sudo cannot prompt inside an agent-run command. The cached
@@ -104,9 +138,9 @@ git log --oneline -2       # did it commit the hardware file?
 ### Manual equivalent
 
 ```bash
-sudo cp /etc/nixos/hardware-configuration.nix ~/nixconfig/hosts/meri-laptop/
-sudo chown "$USER" ~/nixconfig/hosts/meri-laptop/hardware-configuration.nix
-cd ~/nixconfig
+sudo cp /etc/nixos/hardware-configuration.nix /srv/nixconfig/hosts/meri-laptop/
+sudo chown "$USER" /srv/nixconfig/hosts/meri-laptop/hardware-configuration.nix
+cd /srv/nixconfig
 git add hosts/meri-laptop/hardware-configuration.nix
 git commit -m "feat(meri-laptop): add generated hardware configuration"
 ```
@@ -119,12 +153,21 @@ Check the file: `fileSystems."/"`, `fileSystems."/boot"`, and the
 `hardware.cpu.*.updateMicrocode` line.
 
 ```bash
-sudo nixos-rebuild switch --flake .#meri-laptop
+sudo nixos-rebuild switch --flake /srv/nixconfig#meri-laptop
+```
+
+If evaluation stops with `repository path '/srv/nixconfig' is not owned by
+current user`, the system-wide git config from the new host config does not
+exist yet on this first run. On the laptop `/etc` is writable (unlike WSL), so
+run it once and retry:
+
+```bash
+sudo git config --system --add safe.directory /srv/nixconfig
 ```
 
 Not `make switch` yet — the hostname is still `nixos`. The build installs KDE
-Plasma 6, Chrome, Edge, WPS and Zalo; Zalo downloads a ~180 MB AppImage, so
-expect 15–30 minutes.
+Plasma 6, Chrome, Edge, WPS, Zalo and the `nixos` developer profile; Zalo
+downloads a ~180 MB AppImage, so expect 15–30 minutes.
 
 `/etc/nixos/*` stays behind and is no longer used once the flake takes over;
 keeping it is harmless.
@@ -162,14 +205,29 @@ world-readable.
   the physical interfaces on purpose, so this works on any Wi-Fi without
   exposing sshd.
 
+### The nixos account (developer profile)
+
+- **Home Manager**: `systemctl status home-manager-nixos` → active (exited).
+- **Secrets**: `systemctl --user status sops-nix` → active, then
+  `ls ~/.config/sops-nix/secrets/` and in a fresh zsh
+  `zsh -c 'printf "%s\n" "${EXAMPLE_SECRET:+set}"'`. `linger` is enabled, so
+  the render happens at boot rather than only after the first login.
+- **Dotfiles**: `~/.config/nvim`, `~/.config/lazygit` and `~/.config/opencode`
+  are out-of-store symlinks into `/srv/nixconfig/submodules/`.
+- **Tools**: `nvim`, `lazygit`, `journals`, `herdr`, `opencode --version` (v2)
+  and `claude --version` all resolve.
+- **Agent auth is per user**: log in again for `opencode`, `claude` and `gh` on
+  this machine; credentials from the WSL distro are not shared.
+
 ## 7. opencode after the switch (admin)
 
-The host installs just the opencode v2 binary from `llm-agents`, system-wide
-(not the full agent set the WSL hosts import). `llm-agents` packages v2 as
-`opencode2`, so it is exposed under the plain `opencode` name; v1 and v2 share
-`~/.local/share/opencode` and must not run side by side. v2 imports the
-bootstrap v1 `auth.json` on first start, so the key from step 3 normally
-carries over.
+The host imports `modules/nixos/llm-agents.nix` and `modules/nixos/herdr.nix`,
+so the `nixos` account gets the same system-wide agent toolset as the WSL
+hosts: `opencode` v2, `claude`, `pi`, `antigravity-cli` and `herdr`.
+`llm-agents` packages v2 as `opencode2`, so the module exposes it under the
+plain `opencode` name; v1 and v2 share `~/.local/share/opencode` and must not
+run side by side. v2 imports the bootstrap v1 `auth.json` on first start, so
+the key from step 3 normally carries over.
 
 Credentials are **per user** and stored in opencode's SQLite database, never in
 this repo.
@@ -188,7 +246,7 @@ provider as a positional argument. For `run`, v1's
 (`opencode`) or let it work non-interactively:
 
 ```bash
-cd ~/nixconfig
+cd /srv/nixconfig
 opencode run --auto "Check this host with nix flake check and list what is
 still missing"
 ```
@@ -204,7 +262,7 @@ file contains secrets, treat it like a private key.
 ## 8. Updates
 
 ```bash
-cd ~/nixconfig
+cd /srv/nixconfig
 git pull
 make switch                          # hostname is meri-laptop by now
 nix flake update zalo-for-linux      # Zalo releases independently of nixpkgs
@@ -216,6 +274,10 @@ nix flake update zalo-for-linux      # Zalo releases independently of nixpkgs
 | --- | --- |
 | `error: Path 'hosts/meri-laptop' is not tracked by Git` | hardware file not `git add`ed (step 4) |
 | rebuild warns about the placeholder root | hardware config missing or untracked (step 4) |
+| `repository path '/srv/nixconfig' is not owned by current user` | first switch happens before the host's system-wide `safe.directory` exists; `sudo git config --system --add safe.directory /srv/nixconfig` (step 4) |
+| switch aborts in `home-manager-nixos` with a sops/age error | the personal `~/.config/sops/age/keys.txt` is missing (step 3) |
+| `journals` unit fails in `journals-preflight` | `make journals-deps` not run in `/srv/nixconfig` (step 3) |
+| `nixos` has no secrets or `~/.config/nvim` | `home-manager-nixos` did not run; `systemctl status home-manager-nixos`, then `sudo systemctl restart home-manager-nixos` |
 | meri can't log in at SDDM | `sudo passwd meri` not run (step 5) |
 | opencode run hangs on sudo | run `sudo -v` first; the timestamp expires after ~5 minutes |
 | `ssh: connect to host meri-laptop port 22: refused` from the LAN | expected: port 22 is only open on `tailscale0`, use the tailnet name/IP |

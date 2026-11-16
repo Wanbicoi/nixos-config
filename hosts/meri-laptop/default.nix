@@ -1,10 +1,11 @@
 # Host: meri-laptop — meri's personal laptop (native NixOS, not WSL).
 #
 # Two accounts, matching the WSL hosts' split: `nixos` is the admin (wheel,
-# runs `nixos-rebuild`, no desktop profile) and `meri` is the everyday user
-# who owns the KDE session. meri is deliberately *not* in wheel: she never
-# needs sudo to use the machine, and the admin account stays the only way to
-# change the system.
+# runs `nixos-rebuild`) and also carries the same developer profile the WSL
+# machines use; `meri` is the everyday user who owns the KDE session and keeps
+# a KDE-only profile. meri is deliberately *not* in wheel: she never needs sudo
+# to use the machine, and the admin account stays the only way to change the
+# system.
 {
   inputs,
   pkgs,
@@ -17,6 +18,11 @@
     inputs.home-manager.nixosModules.home-manager
 
     ../../modules/nixos/common.nix
+    # Developer stack for the `nixos` profile, exactly as on the WSL hosts:
+    # the agent CLIs, herdr, and the journals daemon.
+    ../../modules/nixos/llm-agents.nix
+    ../../modules/nixos/herdr.nix
+    ../../modules/nixos/journals.nix
   ]
   # Produced on the laptop by `nixos-generate-config` and copied in before
   # the first switch; it carries the disk UUIDs, kernel modules, and CPU
@@ -31,23 +37,14 @@
   config =
     let
       missingHardwareConfig = !(builtins.pathExists ./hardware-configuration.nix);
-
-      # Only opencode from llm-agents.nix, not the full agent set WSL imports:
-      # this is meri's machine. The input packages v2 as `opencode2`; the
-      # wrapper exposes it under the normal command name, because running v1
-      # and v2 side by side collides in ~/.local/share/opencode (see
-      # modules/nixos/llm-agents.nix).
-      llm = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
     in
     {
       networking.hostName = "meri-laptop";
 
+      # opencode v1 is installed as a bootstrap by the first-install guide; the
+      # `nixos` profile then gets v2 from modules/nixos/llm-agents.nix, under
+      # the plain command name.
       environment.systemPackages = [
-        (pkgs.runCommand "opencode-v2-symlink" { } ''
-          mkdir -p $out/bin
-          ln -s ${llm.opencode2}/bin/opencode2 $out/bin/opencode
-        '')
-
         # AnyConnect-compatible VPN client. The official Cisco Secure Client
         # has no nixpkgs package and its posture/Umbrella modules cannot be
         # reproduced; openconnect speaks the same protocol for the VPN part.
@@ -153,6 +150,31 @@
       };
       networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 22 ];
 
+      # The `nixos` profile is the same one the WSL hosts use, so the checkout
+      # lives at /srv/nixconfig there too: outside the home, linked back out of
+      # store for the nvim/agent submodules, and group-readable so the journals
+      # daemon can read its source through the `nixconfig` group. Only nixos
+      # writes it; root re-evaluates it on every rebuild, hence the
+      # safe.directory entries (not recursive, so the glob is needed).
+      users.groups.nixconfig = { };
+      systemd.tmpfiles.rules = [
+        "z /srv/nixconfig 2750 nixos nixconfig - -"
+      ];
+      programs.git = {
+        enable = true;
+        config.safe.directory = [
+          "/srv/nixconfig"
+          "/srv/nixconfig/*"
+        ];
+      };
+
+      # Shared journal, configured exactly like the WSL hosts. The database
+      # stays at /srv/shared/journals/data.sqlite (module default).
+      services.journals = {
+        enable = true;
+        repoRoot = "/srv/nixconfig";
+      };
+
       time.timeZone = "Asia/Ho_Chi_Minh";
       i18n.defaultLocale = "en_US.UTF-8";
 
@@ -171,14 +193,22 @@
         dejavu_fonts
       ];
 
+      # Admin account, and the one that gets the shared developer profile. The
+      # audio/video groups mirror meri's so the Plasma/PipeWire session works
+      # the same for both. linger keeps a user manager at boot, so the sops-nix
+      # user service renders ~/.config/sops-nix/secrets before the first login
+      # (without it the render is skipped until someone actually logs in).
       users.users.nixos = {
         isNormalUser = true;
         uid = 1000;
         extraGroups = [
           "wheel"
           "networkmanager"
+          "audio"
+          "video"
         ];
         shell = pkgs.zsh;
+        linger = true;
       };
 
       users.users.meri = {
@@ -197,15 +227,25 @@
       # (users.mutableUsers is on by default). A hashed password in the store
       # would be world-readable and wrong to share.
       #
-      # Only meri gets a Home Manager profile. home/nixos pulls in the
-      # personal sops secrets and WSL-only tooling, neither of which belongs on
-      # this machine, so the admin account stays a bare system account.
+      # meri keeps the KDE-only profile; nixos gets the same shared developer
+      # profile as the WSL machines (home/nixos + home/common), including the
+      # personal sops namespace. repoRoot points the submodule links and the
+      # journals TUI at the /srv checkout, replacing the WSL-only value from
+      # home/common/wsl.nix.
       home-manager = {
         useGlobalPkgs = true;
         useUserPackages = true;
         extraSpecialArgs = { inherit inputs; };
         backupFileExtension = "hm-backup";
 
+        users.nixos = {
+          imports = [ ../../home/nixos ];
+          submodules.repoRoot = "/srv/nixconfig";
+          # Wayland clipboard for the zsh vi-yank fallback in
+          # home/common/shell.nix; the WSL profiles get the same tool from
+          # home/common/wsl.nix instead.
+          home.packages = [ pkgs.wl-clipboard ];
+        };
         users.meri.imports = [ ../../home/meri ];
       };
     };

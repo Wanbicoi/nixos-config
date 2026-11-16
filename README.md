@@ -11,7 +11,7 @@ Declarative configuration for my machines — NixOS laptops, NixOS-WSL, and
 | `hosts/<name>/` | One directory per machine: hostname, platform modules, users. |
 | `modules/nixos/` | NixOS system modules shared by all machines. |
 | `modules/darwin/` | nix-darwin modules (placeholder). |
-| `home/common/` | Home Manager modules shared by the developer profiles (`wsl`, `wsl-laidon`); `home/meri` keeps its own minimal desktop profile. |
+| `home/common/` | Home Manager modules shared by the developer profiles (`wsl`, `wsl-laidon`, and `nixos` on `meri-laptop`); `home/meri` keeps its own minimal desktop profile. |
 | `home/<user>/` | Per-user identity and user-specific packages. |
 | `submodules/` | Config checkouts (`nvim`, `agent-config`, `lazygit`) plus the `journals` source used by its system service. |
 | `secrets/` | Age-encrypted secrets, decrypted at activation by sops-nix. See [`secrets/README.md`](secrets/README.md). |
@@ -22,7 +22,7 @@ Declarative configuration for my machines — NixOS laptops, NixOS-WSL, and
 | --- | --- | --- |
 | `wsl` | NixOS-WSL | personal distro; `nixos` is the only account (default user and admin) |
 | `wsl-laidon` | NixOS-WSL | company-first distro; default user `troy` (no sudo), admin `nixos` via `wsl.exe -u nixos` |
-| `meri-laptop` | NixOS (native laptop) | meri's daily driver: Plasma 6 (Wayland), Chrome/Edge/Zalo/WPS, fcitx5 Bamboo; admin `nixos` |
+| `meri-laptop` | NixOS (native laptop) | meri's daily driver: Plasma 6 (Wayland), Chrome/Edge/Zalo/WPS, fcitx5 Bamboo; admin `nixos` also runs the shared developer profile |
 
 ## Fresh setup
 
@@ -67,11 +67,12 @@ machine").
    may build more from source than later ones. Those settings apply from the
    next switch onwards.
 
-5. **Move the checkout to its shared location** (NixOS-WSL) following
+5. **Move the checkout to its shared location** following
    [Shared checkout](#shared-checkout). On `wsl-laidon` the `chgrp`/`chmod`
    step is what lets the company user read the flake; on personal `wsl` the
-   checkout stays owner-only. A laptop can keep the checkout in `~` and skip
-   this.
+   checkout stays owner-only. `meri-laptop` does the same move because its
+   `nixos` profile links submodules out of `/srv/nixconfig` (see
+   [`hosts/meri-laptop/README.md`](hosts/meri-laptop/README.md)).
 
 6. **Verify:**
 
@@ -166,13 +167,14 @@ user's password, and no profile declares one (the accounts are locked `!` in
 
 ## Shared checkout
 
-Both hosts keep the nixconfig checkout at `/srv/nixconfig` (set via
-`submodules.repoRoot` in `home/common/wsl.nix`). On the personal `wsl` distro
-only `nixos` exists, but the tree is still `2750 nixos:nixconfig`: only `nixos`
-writes it, and the `journals` system user reads it through the `nixconfig`
-group (`tmpfiles` `z` rule in `hosts/wsl/default.nix`, see
-`modules/nixos/journals.nix`). The journal database itself is outside the
-checkout, at `/srv/shared/journals/`.
+All three machines keep the nixconfig checkout at `/srv/nixconfig`: the WSL
+hosts set `submodules.repoRoot` in `home/common/wsl.nix`, and
+`hosts/meri-laptop` sets it on the `nixos` Home Manager profile. On the
+personal `wsl` distro only `nixos` exists, but the tree is still
+`2750 nixos:nixconfig`: only `nixos` writes it, and the `journals` system user
+reads it through the `nixconfig` group (`tmpfiles` `z` rule in
+`hosts/wsl/default.nix`, see `modules/nixos/journals.nix`). The journal
+database itself is outside the checkout, at `/srv/shared/journals/`.
 
 On `wsl-laidon`, nixos still **owns** it, but company users are in the
 `nixconfig` group only so they can **read** it — never write it, because root
@@ -233,11 +235,13 @@ so it either over-shares or achieves nothing. Move the data here instead.
 The journals daemon runs as the `journals` system user on boot and owns
 `/srv/shared/journals/data.sqlite` (`modules/nixos/journals.nix`). The TUI
 (`journals`) only talks to it over `127.0.0.1`, so every user on a machine
-shares one journal. The same `db_path` is used on both distros, but each
-distro has its own data; on `wsl-laidon` `nixos` and `troy` share one DB.
+shares one journal. The same `db_path` is used on every host, but each host
+has its own data; on `wsl-laidon` `nixos` and `troy` share one DB, and
+`meri-laptop` keeps its own.
 
-- Ports: `4321` on both hosts. If both WSL distros run at once they may share a
-  network namespace, so keep only one journals service running at a time.
+- Ports: `4321` on every host. If both WSL distros run at once they may share a
+  network namespace, so keep only one journals service running at a time; the
+  laptop is a separate machine, so it never collides.
 - Config is declarative at `/etc/journals/config.yaml`; do not edit it by hand.
 - Logs: `journalctl -u journals`; control: `sudo systemctl {status,restart} journals`.
 - After checking out or updating the submodule, run `make journals-deps` and

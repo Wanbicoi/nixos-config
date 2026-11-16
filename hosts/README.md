@@ -15,7 +15,9 @@ thinkbook = mkNixos "thinkbook" "x86_64-linux";
 
 Then create `hosts/thinkbook/default.nix` (copy `hosts/meri-laptop/default.nix`
 for a desktop machine: generated `hardware-configuration.nix` import, plasma6,
-and a user's Home Manager profile).
+a KDE-only everyday user, and the shared developer profile on the admin
+account — `home/nixos` without `home/common/wsl.nix`, which only WSL hosts
+attach).
 
 ## WSL: personal vs company-first distro
 
