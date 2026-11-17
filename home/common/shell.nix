@@ -32,7 +32,10 @@
     initContent = ''
       # Allow Backspace to delete past the Insert-mode entry point
       bindkey -M viins '^?' backward-delete-char
-      bindkey -M viins '^H' backward-delete-char
+
+      # Ctrl+Backspace arrives as ^H (Backspace itself is ^?), so it can be
+      # rebound without touching the Backspace key.
+      bindkey -M viins '^H' backward-kill-word
 
       # Allow Ctrl+W to delete the previous word without that restriction
       bindkey -M viins '^W' backward-kill-word
@@ -122,6 +125,13 @@
   # zoxide's chpwd hook, so zoxide's self-check warns on every `cd`. The hook
   # is intact in real terminals; silence the check.
   home.sessionVariables._ZO_DOCTOR = "0";
+
+  # WSL reports itself as Linux, so Claude Code reads the ^H that Ctrl+Backspace
+  # sends as a plain Backspace (one character). This makes it a word delete,
+  # matching the shell. Requires Backspace itself to send ^? (as the viins
+  # bindings above assume); with a terminal that sends ^H for Backspace this
+  # would make Backspace delete a whole word.
+  home.sessionVariables.CLAUDE_CODE_BS_AS_CTRL_BACKSPACE = "1";
 
   programs.starship = {
     enable = true;
