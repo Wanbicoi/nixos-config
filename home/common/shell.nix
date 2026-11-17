@@ -140,9 +140,19 @@
       # Keep a blank line between command output and the prompt.
       add_newline = true;
 
-      # First prompt line: user, context, then a fill that pushes the last
-      # command's duration to the end of the line, then the input character.
-      format = "$username$directory$git_branch$git_status$fill$cmd_duration$line_break$character";
+      # First prompt line: host, user, context, then a fill that pushes the
+      # last command's duration to the end of the line, then the input
+      # character.
+      format = "$hostname$username$directory$git_branch$git_status$fill$cmd_duration$line_break$character";
+
+      # Always show which host this is: both hosts are WSL, so the terminal
+      # title alone does not tell wsl from wsl-laidon.
+      hostname = {
+        ssh_only = false;
+        style = "bold green";
+        # "@" rather than " on " because git_branch already reads "on <branch>".
+        format = "[$hostname]($style)@";
+      };
 
       # Always show who you are: wsl-laidon has several users, and a plain
       # prompt under `sudo -iu troy` would otherwise look identical to nixos'.
