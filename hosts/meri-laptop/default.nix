@@ -76,6 +76,7 @@
       nixpkgs.config.allowUnfreePredicate =
         pkg:
         builtins.elem (pkgs.lib.getName pkg) [
+          "corefonts"
           "google-chrome"
           "microsoft-edge"
           "wpsoffice"
@@ -188,7 +189,21 @@
 
       # Liberation/DejaVu are the metric-compatible stand-ins WPS expects for
       # Word documents; Plasma brings Noto for the UI and Vietnamese glyphs.
+      # corefonts adds the genuine Times New Roman (unfree; allowlisted above)
+      # so documents rendered here look exactly as on Windows.
+      #
+      # WPS/Office templates ask for Calibri and Cambria, which are not
+      # redistributable; carlito/caladea are the metric-compatible clones, so
+      # lesson plans keep their page breaks when printed. gyre-fonts and
+      # stix-two/lmodern give exam papers and maths formulas proper glyphs.
+      # All of them cover Vietnamese diacritics.
       fonts.packages = with pkgs; [
+        corefonts
+        carlito
+        caladea
+        gyre-fonts
+        stix-two
+        lmodern
         liberation_ttf
         dejavu_fonts
       ];
