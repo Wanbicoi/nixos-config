@@ -73,8 +73,11 @@
     "z /srv/nixconfig 2750 nixos nixconfig - -"
     "a /home/nixos - - - - u:troy:rx"
     # nixos (admin) can read all of troy's home. `A` applies the ACL
-    # recursively at boot; the default ACL makes new entries inherit it.
-    "A /home/troy - - - - u:nixos:rX"
+    # recursively at boot; the default ACL makes new entries inherit it. The
+    # explicit mask matters: with group::--- (mode 0700) the kernel derives the
+    # mask from the group bits, so without `m::rX` the nixos entry is listed but
+    # its effective permission is `---`.
+    "A /home/troy - - - - u:nixos:rX,m::rX"
     "a /home/troy - - - - d:u:nixos:rX"
   ];
 
