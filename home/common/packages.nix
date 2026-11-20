@@ -4,6 +4,35 @@
   ...
 }:
 
+let
+  # Bun's built-in linter (`bun lint`) only exists in the canary channel as of
+  # 1.4.4. Pin the canary npm binary until nixpkgs packages a stable release
+  # that includes it (1.5+), then switch back to `pkgs.bun`.
+  bunPinned =
+    if pkgs.stdenvNoCC.hostPlatform.system == "x86_64-linux" then
+      pkgs.bun.overrideAttrs (
+        finalAttrs: _prev: {
+          version = "1.4.4-canary.20261106.1";
+
+          # Canary builds are published to npm, not GitHub Releases.
+          src = pkgs.fetchurl {
+            url = "https://registry.npmjs.org/@oven/bun-linux-x64-baseline/-/bun-linux-x64-baseline-${finalAttrs.version}.tgz";
+            hash = "sha256-ftumGesW+qAlPq4dHrgPCLePLkpI+bLLKInF+QxIEoE=";
+          };
+
+          sourceRoot = "package";
+
+          installPhase = ''
+            runHook preInstall
+            install -Dm755 ./bin/bun $out/bin/bun
+            ln -s $out/bin/bun $out/bin/bunx
+            runHook postInstall
+          '';
+        }
+      )
+    else
+      pkgs.bun;
+in
 {
   home.packages = (
     with pkgs;
@@ -25,7 +54,7 @@
       # nodes
       pnpm
       yarn
-      bun
+      bunPinned
       nodejs
 
       cargo
