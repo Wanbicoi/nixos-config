@@ -72,6 +72,10 @@
     "a /srv/shared - - - - d:g:shared:rwx"
     "z /srv/nixconfig 2750 nixos nixconfig - -"
     "a /home/nixos - - - - u:troy:rx"
+    # nixos (admin) can read all of troy's home. `A` applies the ACL
+    # recursively at boot; the default ACL makes new entries inherit it.
+    "A /home/troy - - - - u:nixos:rX"
+    "a /home/troy - - - - d:u:nixos:rX"
   ];
 
   # `nixos-rebuild switch --flake .#wsl-laidon` evaluates as root, and git
@@ -120,9 +124,9 @@
     linger = true;
   };
 
-  # Explorer's 9p share runs as the default user (troy), so /home/troy stays
-  # 0700 with no browse grant. /home/nixos is granted u:troy:rx in tmpfiles
-  # above so Explorer can browse nixos's home.
+  # /home/troy stays 0700 for everyone but nixos, who gets a read-only ACL in
+  # tmpfiles above. /home/nixos is granted u:troy:rx so Explorer (which runs as
+  # troy) can browse nixos's home.
 
   # One Home Manager profile per user; both share modules/nixos and home/common.
   home-manager = {

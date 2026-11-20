@@ -105,6 +105,10 @@
       bindkey -M vicmd "yy" vi-yank-whole-line
       bindkey -M visual "y" vi-yank
       bindkey -M visual "Y" vi-yank-whole-line
+
+      # Machine-local shell additions (aliases, functions) that are not part of
+      # the declarative config. The file is not tracked; create it per machine.
+      [[ -r "$HOME/.config/zsh/local.zsh" ]] && source "$HOME/.config/zsh/local.zsh"
     '';
   };
 
