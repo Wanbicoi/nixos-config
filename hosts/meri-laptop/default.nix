@@ -96,6 +96,27 @@
       services.displayManager.sddm.enable = true;
       services.displayManager.defaultSession = "plasma";
 
+      # Spectacle's OCR ("Copy Text") is compiled against libtesseract and
+      # reads the traineddata from the library's compiled-in path; it never
+      # calls the `tesseract` CLI, so installing the CLI (home/meri/packages.nix)
+      # is not enough. nixpkgs builds it with `tesseractLanguages = [ ]`, which
+      # means no traineddata at all, so rebuild Spectacle in the KDE scope the
+      # plasma6 module installs from with English and Vietnamese data.
+      nixpkgs.overlays = [
+        (final: prev: {
+          kdePackages = prev.kdePackages.overrideScope (
+            self: super: {
+              spectacle = super.spectacle.override {
+                tesseractLanguages = [
+                  "eng"
+                  "vie"
+                ];
+              };
+            }
+          );
+        })
+      ];
+
       # PipeWire only. 26.05 renamed the aliases (pulseaudio -> pulse); they
       # keep PulseAudio-only clients — Chrome, Edge, WPS — working without a
       # real pulseaudio daemon fighting PipeWire for the same devices.

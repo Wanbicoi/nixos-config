@@ -21,6 +21,17 @@
     # Spell checking for Kate/Okular (WPS bundles its own).
     hunspell
     hunspellDicts.en_US
+
+    # Tesseract CLI for OCR from a terminal. Spectacle's own OCR is built
+    # separately, in hosts/meri-laptop/default.nix: it links the library and
+    # never runs this binary. The nixpkgs default pulls every traineddata
+    # language, so keep only the two used here: English and Vietnamese.
+    (tesseract5.override {
+      enableLanguages = [
+        "eng"
+        "vie"
+      ];
+    })
   ];
 
   # Two browsers ship with the machine, so pick one explicitly instead of
